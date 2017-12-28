@@ -1,0 +1,4 @@
+create table applicationlist (appid varchar(50) not null default '',domain varchar(100) not null default '',company varchar(500) default '',username varchar(500) default '',usermail varchar(500) not null default '',usermobile varchar(500) default '',createdon timestamp,primary key(domain))ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+create table freeappidtable (appid int(1) not null default 0,schemastatus varchar(50) not null default '');
