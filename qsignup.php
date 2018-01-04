@@ -197,10 +197,10 @@ p.bottom-30 {
                     document.getElementById('error').style.display = "block";
                     document.getElementById('error').innerHTML = "Please fill your password!";                       
                     return false;
-                } else if (password.toString().length < 4) {
+                } else if (password.toString().length < 6) {
                     document.getElementById("password").style.borderColor = "#e66c3e";                 
                         document.getElementById('error').style.display = "block";
-                        document.getElementById('error').innerHTML = "Please fill your password atleast 4 character!";
+                        document.getElementById('error').innerHTML = "Please fill your password atleast 6 character!";
                         return false;
                 } 
                 if (mobileno == null || mobileno == '') {
