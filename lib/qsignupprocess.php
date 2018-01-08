@@ -200,13 +200,19 @@ $mauticdomain='localhost';
 		\'log_path\' => \''.$mauticrootpath.'/app/logs/'.$domain.'\',
 		\'image_path\' => \'media/images/'.$domain.'\',
 		\'tmp_path\' => \''.$mauticrootpath.'/app/cache/'.$domain.'\',
-        \'api_enabled\' => 1,
+        \'api_enabled\' => 0,
 	\'api_enable_basic_auth\' => false,
 	\'api_oauth2_access_token_lifetime\' => 60,
 	\'api_oauth2_refresh_token_lifetime\' => 14,
 	\'api_batch_max_limit\' => \'200\',
         \'upload_dir\' => \''.$mauticrootpath.'/app/../media/files/'.$domain.'\',
-	\'max_size\' => \'25\',
+	\'max_size\' => \'10\',
+	\'cors_restrict_domains\' => 0,
+	\'cors_valid_domains\' => array(
+
+	),
+	\'default_timezone\' => \'Asia/Kolkata\',
+	\'locale\' => \'en_US\',
 	);
 	?>';
 	$configpath=$mauticrootpath."/app/config/".$domain;
