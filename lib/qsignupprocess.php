@@ -213,6 +213,9 @@ $mauticdomain='localhost';
 	),
 	\'default_timezone\' => \'Asia/Kolkata\',
 	\'locale\' => \'en_US\',
+	\'email_frequency_number\' => 3,
+\'email_frequency_time\' => \'DAY\',
+\'mailer_is_owner\' => 0,
 	);
 	?>';
 	$configpath=$mauticrootpath."/app/config/".$domain;
