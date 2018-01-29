@@ -4,6 +4,11 @@
 include("process/config.php");
 include("process/field.php");
 include("util.php");
+include("process/createElasticEmailSubAccount.php");
+
+define('MAUTIC_ROOT_DIR', "/var/www/mauto");
+define('MAUTIC_DOMAIN', "localhost/mauto");
+
 function displaysignuplog($msg) {
 	$logdir="../log/";
 			if (!is_dir($logdir)) {
@@ -77,10 +82,31 @@ try{
 		displaysignuplog("SQL:".$sql);
 		$result = execSQL ( $con, $sql );
 		displaysignuplog("DB Name:".$dbname);
-		createMauticConfigFile($domain,$dbname,$fromname,$frommail);
+		$elasticuser="";
+		$elasticpwd="";
+		if(strpos(MAUTIC_DOMAIN, "leadsengage.com") !== false){
+            $status=createSubAccount("$domain@leadsengage.com","LeadsEngage@44#");
+            if($status[1] == ""){
+                $elasticuser="$domain@leadsengage.com";
+                $elasticpwd=$status[0];
+                $isupdated=updateHTTPNotification($status[0], "http://$domain.".MAUTIC_DOMAIN."/mailer/elasticemail/callback");
+                if(!$isupdated){
+                    $response['alert']="HTTP Notification not enabled!Do Manually.";
+                }
+            }else{
+                $response['alert']="Elastic Sub Account Creation Failed:".$status[1];
+            }
+		}
+
+		createMauticConfigFile($domain,$dbname,$fromname,$frommail,$elasticuser,$elasticpwd);
 		createMauticFirstUser($con,$dbname,$frommail,$firstname,$lastname,$pwd);
-		$url="http://$domain.localhost/mauto/index.php";
+
+
+		$url="http://$domain.".MAUTIC_DOMAIN."/index.php";
 		$url ='../qsignup.php?message=success&url='.$url;
+		if(isset($response['alert'])){
+            $url.="&notify=".$response['alert'];
+		}
 		header ( 'Location:' . $url );
 		}else if(isset($response['error'])){
 			$url ='qsignup.php?message=' .$response['error'];
@@ -168,9 +194,7 @@ function createSaasDatabase($con) {
 	return $response;
 }
 
-function createMauticConfigFile($domain,$dbname,$fromname,$frommail){
-$mauticrootpath="/var/www/mauto";
-$mauticdomain='localhost';
+function createMauticConfigFile($domain,$dbname,$fromname,$frommail,$elastic_user,$elastic_pwd){
 	$parameters='<?php
 	$parameters = array(
 		\'db_driver\' => \'pdo_mysql\',
@@ -185,27 +209,27 @@ $mauticdomain='localhost';
 		\'db_server_version\' => \'5.5.58-0ubuntu0.14.04.1\',
 		\'mailer_from_name\' => \''.$fromname.'\',
 		\'mailer_from_email\' => \''.$frommail.'\',
-		\'mailer_transport\' => \'mautic.transport.amazon\',
+		\'mailer_transport\' => \'mautic.transport.elasticemail\',
 		\'mailer_host\' => null,
 		\'mailer_port\' => null,
-		\'mailer_user\' => \'<YOUR_AWS_USER>\',
-		\'mailer_password\' => \'<YOUR_AWS_PASSWORD>\',
+		\'mailer_user\' => \''.$elastic_user.'\',
+		\'mailer_password\' => \''.$elastic_pwd.'\',
 		\'mailer_encryption\' => null,
 		\'mailer_auth_mode\' => null,
 		\'mailer_spool_type\' => \'file\',
 		\'mailer_spool_path\' => \'%kernel.root_dir%/spool/'.$domain.'\',
 		\'secret_key\' => \'61fe7d5e17d03e585ebf52ff75224c30a47d449860607df686ddccfcd85fc2df\',
-		\'site_url\' => \'http://'.$domain.'.'.$mauticdomain.'/mauto/index.php\',
-			\'cache_path\' => \''.$mauticrootpath.'/app/cache/'.$domain.'\',
-		\'log_path\' => \''.$mauticrootpath.'/app/logs/'.$domain.'\',
+		\'site_url\' => \'http://'.$domain.'.'.MAUTIC_DOMAIN.'/index.php\',
+			\'cache_path\' => \''.MAUTIC_ROOT_DIR.'/app/cache/'.$domain.'\',
+		\'log_path\' => \''.MAUTIC_ROOT_DIR.'/app/logs/'.$domain.'\',
 		\'image_path\' => \'media/images/'.$domain.'\',
-		\'tmp_path\' => \''.$mauticrootpath.'/app/cache/'.$domain.'\',
+		\'tmp_path\' => \''.MAUTIC_ROOT_DIR.'/app/cache/'.$domain.'\',
         \'api_enabled\' => 0,
 	\'api_enable_basic_auth\' => false,
 	\'api_oauth2_access_token_lifetime\' => 60,
 	\'api_oauth2_refresh_token_lifetime\' => 14,
 	\'api_batch_max_limit\' => \'200\',
-        \'upload_dir\' => \''.$mauticrootpath.'/app/../media/files/'.$domain.'\',
+        \'upload_dir\' => \''.MAUTIC_ROOT_DIR.'/app/../media/files/'.$domain.'\',
 	\'max_size\' => \'10\',
 	\'cors_restrict_domains\' => 0,
 	\'cors_valid_domains\' => array(
@@ -218,7 +242,7 @@ $mauticdomain='localhost';
 \'mailer_is_owner\' => 0,
 	);
 	?>';
-	$configpath=$mauticrootpath."/app/config/".$domain;
+	$configpath=MAUTIC_ROOT_DIR."/app/config/".$domain;
 	if (! is_dir ( $configpath )) {
 		$old = umask ( 0 );
 		mkdir ( $configpath, 0777 );

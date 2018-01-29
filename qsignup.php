@@ -58,11 +58,15 @@ p.bottom-30 {
 						
 								if (isset ( $_REQUEST ['message'] )) {
 									$msg = $_REQUEST ['message'];
-                                }  
+                                }
+
                                 if (isset ( $_REQUEST ['url'] )) {
                                     $url = $_REQUEST ['url'];
                                     $msg="Signup Successfully!.<a style=\"color:#fff;\" href=\"$url\">Click here to login</a>";
-                                }     
+                                    if (isset ( $_REQUEST ['notify'] )) {
+                                        $msg .= "<br>".$_REQUEST ['notify'];
+                                    }
+                                }
 									?>
             <div id="signup">
 		<div class='ex-form'>
