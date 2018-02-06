@@ -84,7 +84,7 @@ try{
 		displaysignuplog("DB Name:".$dbname);
 		$elasticuser="";
 		$elasticpwd="";
-		if(strpos(MAUTIC_DOMAIN, "leadsengage.com") !== false){
+		if(strpos(MAUTIC_DOMAIN, "leadsengage.com") !== false || strpos(MAUTIC_DOMAIN, "cratio.in") !== false){
             $status=createSubAccount("$domain@leadsengage.com","LeadsEngage@44#");
             if($status[1] == ""){
                 $elasticuser="$domain@leadsengage.com";
@@ -92,6 +92,14 @@ try{
                 $isupdated=updateHTTPNotification($status[0], "http://$domain.".MAUTIC_DOMAIN."/mailer/elasticemail/callback");
                 if(!$isupdated){
                     $response['alert']="HTTP Notification not enabled!Do Manually.";
+                }
+                $isupdated=updateAccountProfile($status[0]);
+                if(!$isupdated){
+                	if($response['alert'] != ""){
+                        $response['alert'].="Sub Account Profile Not Updated.Do Manually.";
+					}else{
+                        $response['alert']="Sub Account Profile Not Updated.Do Manually.";
+					}
                 }
             }else{
                 $response['alert']="Elastic Sub Account Creation Failed:".$status[1];
