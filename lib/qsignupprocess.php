@@ -231,7 +231,7 @@ function createMauticConfigFile($domain,$dbname,$fromname,$frommail,$elastic_use
 			\'cache_path\' => \''.MAUTIC_ROOT_DIR.'/app/cache/'.$domain.'\',
 		\'log_path\' => \''.MAUTIC_ROOT_DIR.'/app/logs/'.$domain.'\',
 		\'image_path\' => \'media/images/'.$domain.'\',
-		\'tmp_path\' => \''.MAUTIC_ROOT_DIR.'/app/cache/'.$domain.'\',
+		\'tmp_path\' => \''.MAUTIC_ROOT_DIR.'/app/../media/files/'.$domain.'\',
         \'api_enabled\' => 0,
 	\'api_enable_basic_auth\' => false,
 	\'api_oauth2_access_token_lifetime\' => 60,
