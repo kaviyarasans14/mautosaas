@@ -85,9 +85,10 @@ try{
 		$elasticuser="";
 		$elasticpwd="";
 		if(strpos(MAUTIC_DOMAIN, "leadsengage.com") !== false || strpos(MAUTIC_DOMAIN, "cratio.in") !== false){
-            $status=createSubAccount("$domain@leadsengage.com","LeadsEngage@44#");
+            $status=createSubAccount(
+            	"$domain@leadsengage.net","LeadsEngage@44#");
             if($status[1] == ""){
-                $elasticuser="$domain@leadsengage.com";
+                $elasticuser="$domain@leadsengage.net";
                 $elasticpwd=$status[0];
                 $isupdated=updateHTTPNotification($status[0], "http://$domain.".MAUTIC_DOMAIN."/mailer/elasticemail/callback");
                 if(!$isupdated){
@@ -248,6 +249,7 @@ function createMauticConfigFile($domain,$dbname,$fromname,$frommail,$elastic_use
 	\'email_frequency_number\' => 3,
 \'email_frequency_time\' => \'DAY\',
 \'mailer_is_owner\' => 0,
+\'background_import_if_more_rows_than\' => 5000,
 	);
 	?>';
 	$configpath=MAUTIC_ROOT_DIR."/app/config/".$domain;
