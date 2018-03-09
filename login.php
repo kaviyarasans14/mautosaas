@@ -116,7 +116,7 @@
                                     document.getElementById('error').style.display = "block";
                                     document.getElementById('error').innerHTML = "Given domain name is not registered with us!"; 
                                 }else{
-                                    var url="https://"+domain+".localhost/mauto/s/login";
+                                    var url="https://"+domain+".cratio.in/index.php";
                                     window.open(url,"_blank")
                                 } 
                             }

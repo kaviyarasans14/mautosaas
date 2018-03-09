@@ -6,8 +6,8 @@ include("process/field.php");
 include("util.php");
 include("process/createElasticEmailSubAccount.php");
 
-define('MAUTIC_ROOT_DIR', "/var/www/mauto");
-define('MAUTIC_DOMAIN', "localhost/mauto");
+define('MAUTIC_ROOT_DIR', "/var/www/cops");
+define('MAUTIC_DOMAIN', "cratio.in");
 
 function displaysignuplog($msg) {
 	$logdir="../log/";
@@ -207,12 +207,12 @@ function createMauticConfigFile($domain,$dbname,$fromname,$frommail,$elastic_use
 	$parameters='<?php
 	$parameters = array(
 		\'db_driver\' => \'pdo_mysql\',
-		\'db_host\' => \'localhost\',
+		\'db_host\' => \'cratio-m4-xlarge.crlgz5ekovbv.ap-south-1.rds.amazonaws.com\',
 		\'db_table_prefix\' => null,
 		\'db_port\' => \'3306\',
 		\'db_name\' => \''.$dbname.'\',
-		\'db_user\' => \'root\',
-		\'db_password\' => \'dacam\',
+		\'db_user\' => \'cratio\',
+		\'db_password\' => \'CratioCrm#123\',
 		\'db_backup_tables\' => 1,
 		\'db_backup_prefix\' => \'bak_\',
 		\'db_server_version\' => \'5.5.58-0ubuntu0.14.04.1\',
@@ -228,7 +228,7 @@ function createMauticConfigFile($domain,$dbname,$fromname,$frommail,$elastic_use
 		\'mailer_spool_type\' => \'file\',
 		\'mailer_spool_path\' => \'%kernel.root_dir%/spool/'.$domain.'\',
 		\'secret_key\' => \'61fe7d5e17d03e585ebf52ff75224c30a47d449860607df686ddccfcd85fc2df\',
-		\'site_url\' => \'http://'.$domain.'.'.MAUTIC_DOMAIN.'/index.php\',
+		\'site_url\' => \'http://'.$domain.'.'.MAUTIC_DOMAIN.'/\',
 			\'cache_path\' => \''.MAUTIC_ROOT_DIR.'/app/cache/'.$domain.'\',
 		\'log_path\' => \''.MAUTIC_ROOT_DIR.'/app/logs/'.$domain.'\',
 		\'image_path\' => \'media/images/'.$domain.'\',
