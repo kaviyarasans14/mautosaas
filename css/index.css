@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css?family=Damion|Muli:400,600');
+
+:focus{
+	outline: none;
+}
+
+/* necessary to give position: relative to parent. */
+input[type="text"]{
+	font: 15px/24px 'Muli', sans-serif;
+	color: #333;
+	width: 100%;
+	box-sizing: border-box;
+	letter-spacing: 1px;
+}
+
+:focus{
+	outline: none;
+}
+
+.col-3{
+	width: 15%; 
+	margin: 40px 1%; 
+	position: relative;
+}
+
+.input-effect-lastname{
+	float:left;
+}
+
+/* necessary to give position: relative to parent. */
+input[type="text"]{
+	font: 15px/24px "Lato", Arial, sans-serif; 
+	color: #333; 
+	width: 100%; 
+	box-sizing: border-box; 
+	letter-spacing: 1px;
+}
+
+.signup_textbox {
+	border: 0; 
+	padding: 7px 15px; 
+	border: 1px solid #ccc; 
+	position: relative; 
+	background: transparent;
+}
+
+.signup_textbox ~ .focus-bg{
+	position: absolute; 
+	left: 0; 
+	top: 0; 
+	width: 0; 
+	height: 100%; 
+	background-color: transparent; 
+	transition: 0.4s; z-index: -1;
+}
+.signup_textbox:focus ~ .focus-bg, 
+.has-content.signup_textbox ~ .focus-bg{
+	transition: 0.4s; 
+	width: 100%; 
+	background-color: #ededed;
+}
+.signup_textbox ~ label{
+	position: absolute; 
+	left: 14px; 
+	width: 100%; 
+	top: 10px; 
+	color: #aaa; 
+	transition: 0.3s; 
+	z-index: -1; 
+	letter-spacing: 0.5px;
+}
+.signup_textbox:focus ~ label, .has-content.signup_textbox ~ label{
+	top: -18px; 
+	left: 0; 
+	font-size: 12px; 
+	color: #333; 
+	transition: 0.3s;
+}
+
+

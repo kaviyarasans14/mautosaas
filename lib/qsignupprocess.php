@@ -50,11 +50,14 @@ try{
 		throw new Exception ( "Not able to connect to DB" );
 	}
 	startTransaction($con);
+	if (isset ( $_REQUEST ["params"] )) {
+		setREQUESTPARAM ( $_REQUEST ["params"] );
+	}
 	if($_REQUEST['checkavailability']){
 	$domain=$_REQUEST['checkavailability'];
 	$isavailable=checkDomainAvailability($con,$domain);
 	if($isavailable){
-       die("domainnotexists");
+      	die("domainnotexists");
 	}else{
 	die("domainexist");
 	}
@@ -63,6 +66,7 @@ try{
 		die("Domain Not Found!");	
 		}
 		$companyname=$_REQUEST['companyname'];
+		echo $companyname;
 		$firstname=$_REQUEST['firstname'];
 		$lastname=$_REQUEST['lastname'];
 		$fromname=$firstname." ".$lastname;
