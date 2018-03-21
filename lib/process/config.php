@@ -2,12 +2,12 @@
 
 class DBINFO {
 
-	public static $HOSTNAME = 'localhost';
-	public static $APPDBNAME = 'leadsengage_apps';
-	public static $COMMONDBNAME = 'leadsengage_apps';
+	public static $HOSTNAME = 'cratio-m4-xlarge.crlgz5ekovbv.ap-south-1.rds.amazonaws.com';
+	public static $APPDBNAME = 'leadsengage_int';
+	public static $COMMONDBNAME = 'leadsengage_int';
 	public static $DBNAME = 'dacamsys_hrms';
-	public static $DBUSER = 'root';
-	public static $DBPWD = 'dacam';
+	public static $DBUSER = 'cratio';
+	public static $DBPWD = 'CratioCrm#123';
 	public static $DBTYPE = 'mysql';
 	public static $IS_AWS_SERVER = FALSE;
 	public static $PORT = '3306';

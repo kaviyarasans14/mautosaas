@@ -232,37 +232,37 @@ function updateLicenseInfo($con, $appid, $dbname){
 	displaysignuplog("Select Feature SQL:".$sql);
 	$dbrow = getResultArray ( $con, $sql );
 	$licenseinfoval = "";	
-	$sql = "insert into $licenseinfotable values (1,'0','0','0','0','0','0','0','','','','0','0','0','Active');";
-	displaysignuplog("Insert  SQL:".$isql);
-	$result = execSQL ( $con, $sql );
+//	$sql = "insert into $licenseinfotable values ('0','0','0','0','0','0','0','','','','0','0','0','Active');";
+//	displaysignuplog("Insert  SQL:".$isql);
+//	$result = execSQL ( $con, $sql );
 	for($i = 0; $i < sizeof($dbrow); $i++){
 		$featureindex = $dbrow[$i][0];
 		$featurevalue = $dbrow[$i][1];
-		if ($featureindex == LICENSE::$NOOFUSERS){
+		/*if ($featureindex == LICENSE::$NOOFUSERS){
 			$actualusercount = $featurevalue - 1;
-			$sql = "update $licenseinfotable set total_user_count ='$featurevalue'";
+			$sql = "update $licenseinfotable set total_user_count ='$featurevalue',active_user_count='$actualusercount';";
 			$result = execSQL ( $con, $sql );
 		}
 		if ($featureindex == LICENSE::$TOTALRECORDCOUNT){
-			$sql = "update $licenseinfotable set total_record_count ='$featurevalue'";
+			$sql = "update $licenseinfotable set total_record_count ='$featurevalue',actual_record_count='$featurevalue';";
 			$result = execSQL ( $con, $sql );
 		}
 		if ($featureindex == LICENSE::$TOTAL_ATTACHMENT_SIZE){
-			$sql = "update $licenseinfotable set total_attachement_size ='$featurevalue'";
+			$sql = "update $licenseinfotable set total_attachement_size ='$featurevalue',actual_attachement_size='$featurevalue';";
 			$result = execSQL ( $con, $sql );
 		}
 		if ($featureindex == LICENSE::$TOTAL_EMAIL_COUNT){
-			$sql = "update $licenseinfotable set total_email_count  ='$featurevalue'";
+			$sql = "update $licenseinfotable set total_email_count  ='$featurevalue',actual_email_count ='$featurevalue';";
 			$result = execSQL ( $con, $sql );
 		}
 		if($featureindex == LICENSE::$DURATIONOFDAYS){
 			if($featurevalue != "UL"){
 				$daysval = "+".$featurevalue." days";
-				$enddate = date(date("Y-m-d", strtotime($currentdate)) . " $daysval");
+				$enddate = strtotime(date("Y-m-d", strtotime($currentdate)) . " $daysval");
 			}
 			$sql = "update $licenseinfotable set licensed_days = '$featurevalue', license_start_date  ='$currentdate',license_end_date ='$enddate';";
 			$result = execSQL ( $con, $sql );
-		}
+		}*/
 		$isql = "insert into customfeaturetable values ('$appid','$featureindex','$featurevalue','$currentdatetime')";
 displaysignuplog("Insert Custom SQL:".$isql);
 		$result = execSQL ( $con, $isql );
