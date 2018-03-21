@@ -12,12 +12,17 @@ class DBINFO {
 	public static $IS_AWS_SERVER = FALSE;
 	public static $PORT = '3306';
 	public static $LICENSEAPPID = 'cops';
+	public static $SIGNUP_DBNAME = 'leadsengage_signup';
+	public static $SIGNUP_SEGMENTNAME = 'signupcontacts';
+	public static $DEFAULT_CREATEDBY_ID = '17';
+	public static $DEFAULT_CREATEDBY_NAME = 'Kaviarasan S';
+	public static $DEFAULT_EDITIONINDEX = '1';
 
 }
 
 class FACEBOOKINFO{
-public static $APPID = "322716221472864";
-public static $APPSECRET = "013f0271f91dfcffeac9e4d754aadd80";	
+	public static $APPID = "322716221472864";
+	public static $APPSECRET = "013f0271f91dfcffeac9e4d754aadd80";	
 }
 class LOGINFO {
 
