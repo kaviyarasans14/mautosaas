@@ -92,7 +92,6 @@ try{
 		if(!$isavailable){
       		$url="http://$domain.".MAUTIC_DOMAIN."/index.php";
 			die("url=".$url);
-			//return;
 		}
 		$response=createSaasDatabase($con);
 		if(isset($response['dbname'])){
