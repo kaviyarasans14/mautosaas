@@ -258,7 +258,7 @@ function updateLicenseInfo($con, $appid, $dbname){
         if($featureindex == LICENSE::$DURATIONOFDAYS){
             if($featurevalue != "UL"){
                 $daysval = "+".$featurevalue." days";
-                $enddate = date(date("Y-m-d", strtotime($currentdate)) . " $daysval");
+                $enddate = date("Y-m-d",strtotime(date("Y-m-d", strtotime($currentdate)) . " $daysval"));
             }
             $sql = "update $licenseinfotable set licensed_days = '$featurevalue', license_start_date  ='$currentdate',license_end_date ='$enddate';";
             $result = execSQL ( $con, $sql );
