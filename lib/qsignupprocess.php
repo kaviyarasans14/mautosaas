@@ -98,7 +98,7 @@ try{
         if(isset($response['dbname'])){
             $dbname=$response['dbname'];
             $appid=$response['appid'];
-            $sql="insert into applicationlist(appid,f5,f2,f3,f4,f11) values('$appid','$domain','$companyname','$fromname','$frommail','$usermobile');";
+            $sql="insert into applicationlist(appid,f5,f2,f3,f4,f11,f17,f18,f19,f20,f21,f26,f27,f28) values('$appid','$domain','$companyname','$fromname','$frommail','$usermobile','1','1','1','1','1','0','0','0');";
             displaysignuplog("SQL:".$sql);
             $result = execSQL ( $con, $sql );
             updateLicenseInfo($con, $appid,$dbname);
