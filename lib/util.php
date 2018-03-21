@@ -218,7 +218,48 @@ function getConfigLinkInfo($con, $values) {
 			if ($profile == UserDetails::$SUPER_ADMIN_PROFILE_NAME || $formname == 'table_6') {
 				$returnresponse [] = '1';
 			} else {
-				$returnresponse [] = getDataSharingRules ( $con, $formname, $assigneduseridandroleid, $cassigneduseridandroleid );
+				$ofuserid = $assigneddbrows [0][0];
+				$response = getDataSharingRules ( $con, $formname, $assigneduseridandroleid, $cassigneduseridandroleid );
+				$sql="select propertyvalue from generalsettings where propertyname='EXCLUDE_TERRITORY_DATASHARING_FORMS'";
+				$dbrows = getResultArray ( $con, $sql );
+				if(strpos($dbrows[0][0],$formname) > -1){
+					$returnresponse [] = $response;			
+				} else {
+					$sql="select propertyvalue from generalsettings where propertyname='TERRITORY_DATASHARING_MAP_FORM'";
+					$dbrows = getResultArray ( $con, $sql );
+					if(sizeof($dbrows) > 0){
+						$territoryform=$dbrows[0][0];
+						$sql="select table_6_id from table_6_frm where table_6_id='$ofuserid' and Apply_Territory_Sharing='Yes';";
+						$dbrows = getResultArray ( $con, $sql );	
+						if(sizeof($dbrows) > 0){
+							$securityusergroupcondition = "where ";
+							$territorydsstr=getDatasharingValueByTerritory($con,$formname,$territoryform,$ofuserid);					
+							if($securityusergroupcondition != "" && $territorydsstr != ""){
+								$securityusergroupcondition.=$territorydsstr;	
+							}else if($territorydsstr != ""){
+								$securityusergroupcondition.=$territorydsstr;	
+							}
+							$sql = "select ".$formname."_id from " . $formname . "_frm ". $formname . " ". $securityusergroupcondition;
+							$dbrows = getResultArray ( $con, $sql );
+							if(sizeof($dbrows) > 0){
+								$recordavailable = false;
+								for($k = 0; $k < sizeof($dbrows); $k++){
+									if($tableid == $dbrows [$k][0]){
+										$recordavailable = true;
+										break;
+									}
+								}
+								if(!$recordavailable){
+									$returnresponse [] = '0';
+								} else {
+									$returnresponse [] = $response;
+								}
+							}	
+						}		
+					} else {
+						$returnresponse [] = $response;
+					}
+				}
 			}
 		}
 	} catch ( Exception $e ) {
@@ -608,17 +649,55 @@ function reCreateSearchString($con, $response, $modulename, $formname) {
 	}
 	return $newSearchString;
 }
+
+function deletefromIntegration($con,$formname,$templateid){
+	$dsql = "delete from Mautic_Segment where templateid = '$templateid'";
+	execSQL($con, $dsql);
+}
+
+function integrationTemplates($con, $formname, $templateid){
+	$sql = "select * from Mautic_Segment order by id desc limit 1";
+	$result = getResultArray($con, $sql);
+	$id = 1;
+	if(sizeof($result) > 0){
+		$id = ((int) $result[0][0]) + 1;
+	}
+	$sql = "select * from Mautic_Segment where templateid = '$templateid'";
+	$result = getResultArray($con, $sql);
+	if(sizeof($result) == 0){
+		$isql = "insert into Mautic_Segment values ($id,'".$templateid."','".$formname."','Active')";
+		execSQL($con, $isql);
+		$currenttime = date('Y-m-d H:i:s');
+		$sql = "select searchfields,templatename, issystem,viewfields from searchtemplate where templateid = '$templateid'";
+		$dbrows = getResultArray ( $con, $sql );
+		$templatedetail = $dbrows [0];
+		$advsearchfields = $templatedetail [0];
+		$searchfields = "";	
+		$msql = "select modulename from formtable where formname = '$formname'";
+		$dresult = getResultArray ( $con, $msql );
+		$whereconds = constructWhereCondition ( $con, $dresult[0][0], $formname, $advsearchfields, "", "", "", $templatedetail [1] );
+		if($whereconds != ""){
+			$usql = "update $formname"."_frm as $formname set updatedon = '$currenttime' $whereconds";
+			execSQL($con, $usql);
+		}
+	}
+}
 function processSaveTemplate($con, $obj) {
 	$operation = $obj->{OPERATIONTYPE::$KEY};
 	$currenttime = date('Y-m-d H:i:s');
 	$templatename = $obj->{'Template name'};
 	$templateid = $obj->{'Template Id'};
 	$forsearchtemplate = $obj->{'forsearchtemplate'};
+	$isintegrationneeded = $obj->{'isintegrationneeded'};
 	$ishideinview = $obj->{'ishideinview'};
 	if ($forsearchtemplate == "true") {
 		$forsearchtemplate = "1";
 	} else {
 		$forsearchtemplate = "0";
+	}
+	$integrationneeded = '0';
+	if ($isintegrationneeded == "true") {
+		$integrationneeded = "1";
 	}
 	if ($ishideinview == "true") {
 		$ishideinview = "1";
@@ -673,7 +752,7 @@ function processSaveTemplate($con, $obj) {
 				$isdefaultmobile = "0";
 			}
 		}
-		$sql = 'insert into searchtemplate (templateid,templatename,formname,username,searchfields,modulename,access_rights,viewfields, issystem,ismobile,ismobiledefault,mobileviewfields,forsearchtemplate,ishideinview,updatedon) values (' . '\'' . $templateid . '\'' . ', ' . '\'' . $templatename . '\'' . ',' . '\'' . $formname . '\'' . ',' . '\'' . $username . '\'' . ',' . '\'' . $searchFields . '\'' . ',' . '\'' . $modulename . '\'' . ',' . '\'' . $accesspermission . '\'' . ', ' . '\'' . $viewfields . '\'' . ', ' . '\'' . $issystem . '\'' . ', ' . '\'' . $ismobile . '\'' . ',\'' . $isdefaultmobile . '\'' . ',\'' . $mviewfields . '\'' . ',\'' . $forsearchtemplate . '\',\'' . $ishideinview . '\',\'' . $currenttime . '\')';
+		$sql = 'insert into searchtemplate (templateid,templatename,formname,username,searchfields,modulename,access_rights,viewfields, issystem,ismobile,ismobiledefault,mobileviewfields,forsearchtemplate,ishideinview,updatedon, integrationneeded) values (' . '\'' . $templateid . '\'' . ', ' . '\'' . $templatename . '\'' . ',' . '\'' . $formname . '\'' . ',' . '\'' . $username . '\'' . ',' . '\'' . $searchFields . '\'' . ',' . '\'' . $modulename . '\'' . ',' . '\'' . $accesspermission . '\'' . ', ' . '\'' . $viewfields . '\'' . ', ' . '\'' . $issystem . '\'' . ', ' . '\'' . $ismobile . '\'' . ',\'' . $isdefaultmobile . '\'' . ',\'' . $mviewfields . '\'' . ',\'' . $forsearchtemplate . '\',\'' . $ishideinview . '\',\'' . $currenttime . '\',\'' . $integrationneeded . '\')';
 		saveLastSelectedTemplate ( $con, $obj, $formname, $templatename, $templateid );
 		$response [] = $templateid;
 		$desc = $formname . "/" . $templateid;
@@ -721,7 +800,7 @@ function processSaveTemplate($con, $obj) {
 			$ismobilefieldschanged = true;
 		}
 		$fieldLength = sizeof ( $searchFields );
-		$sql = 'update searchtemplate set issystem=' . '\'' . $issystem . '\'' . ',ismobile=' . '\'' . $ismobile . '\'' . ', viewfields=\'' . $viewfields . '\', mobileviewfields=\'' . $mviewfields . '\', username=\'' . $username . '\', searchfields=\'' . $searchFields . '\',templatename=\'' . $templatename . '\',access_rights=\'' . $accesspermission . '\',ismobiledefault=\'' . $isdefaultmobile . '\',forsearchtemplate=\'' . $forsearchtemplate . '\',ishideinview=\'' . $ishideinview . '\',updatedon=\'' . $currenttime . '\' where templatename=\'' . $origtemplatename . '\' and formname=\'' . $formname . '\'  and templateid = ' . '\'' . $templateid . '\'' . ';';
+		$sql = 'update searchtemplate set issystem=' . '\'' . $issystem . '\'' . ',ismobile=' . '\'' . $ismobile . '\'' . ', viewfields=\'' . $viewfields . '\', mobileviewfields=\'' . $mviewfields . '\', username=\'' . $username . '\', searchfields=\'' . $searchFields . '\',templatename=\'' . $templatename . '\',access_rights=\'' . $accesspermission . '\',ismobiledefault=\'' . $isdefaultmobile . '\',forsearchtemplate=\'' . $forsearchtemplate . '\',ishideinview=\'' . $ishideinview . '\',updatedon=\'' . $currenttime . '\', integrationneeded=\'' . $integrationneeded . '\' where templatename=\'' . $origtemplatename . '\' and formname=\'' . $formname . '\'  and templateid = ' . '\'' . $templateid . '\'' . ';';
 		$desc = $formname . "/" . $templateid;
 		$descsql = "select ismobile from searchtemplate where formname = '$formname' and templateid = '$templateid'";
 		$descrows = getResultArray ( $con, $descsql );
@@ -787,6 +866,12 @@ function processSaveTemplate($con, $obj) {
 			$response = $templatename;
 		}
 	}
+	if ($isintegrationneeded == "true") {
+		integrationTemplates($con, $formname, $templateid);
+	} else if($isintegrationneeded == "false"){
+		deletefromIntegration($con, $formname, $templateid);
+	}
+	
 	return $response;
 }
 function checkForDashBoard($con, $tempname) {
@@ -2836,6 +2921,224 @@ function getFormSaveSQLStmt($con, $formname, $nextid, $inpfields, $fieldsDetail)
 	$stmtres [] = $dbfieldstr;
 	return $stmtres;
 }
+
+function getAutoCheckOutSQLStmt($con, $formname, $nextid, $inpfields, $fieldsDetail) {
+	$fieldstr = '';
+	$dbfieldstr = '';
+	$fieldnamestr = '';
+	$formentity_id_key = $formname . '_id';
+	if ($formname == 'table_21') {
+		if ($appid == '') {
+			$appid = getAppid ();
+		}
+	}
+	foreach ( $inpfields as $fieldkey => $fieldvalue ) {				
+		if ($fieldkey != OPERATIONTYPE::$SUBTABLE_INPUTFIELDS && $fieldkey != OPERATIONTYPE::$SUBTABLELINK_INPUTFIELDS && $fieldkey != OPERATIONTYPE::$LINEITEM_INPUTFIELDS && $fieldkey != OPERATIONTYPE::$BASETABLE_INPUTFIELDS && !(startsWith ( $fieldkey, 'table_' ) && endWith ( $fieldkey, '_name' ))) {
+			$fieldDetails = $fieldsDetail->{$fieldkey};
+			$fieldType = $fieldDetails [0];		
+			$defaultValue = $fieldDetails [1];
+			if ($fieldType == FieldType::$IMAGE && $formname == 'table_6' && $fieldvalue == 'img1.png') {
+				$fieldvalue = "";
+			} else if (($fieldType == FieldType::$IMAGE || $fieldType == FieldType::$PHOTO_CAPTURE || $fieldType == FieldType::$SIGNATURE_CAPTURE) && $fieldvalue == 'empty.png') {
+				$fieldvalue = "";
+			}
+			if ($fieldType == FieldType::$REFERENCE_ENTITYID && $formname == 'table_6' && $fieldkey == 'table_4_0_table_4_id') {
+				if ($fieldvalue == "") {
+					$profileid = $inpfields->{'table_2_0_table_2_id'};
+					$fieldvalue = getRoleIdFromProfileIdForUpdate ( $con, $profileid );
+				}
+			}
+			if ($fieldkey == $formentity_id_key) {
+				$fieldvalue = '' . $nextid;
+				$inpfields->{$fieldkey} = $fieldvalue;
+			} else if ($fieldType == FieldType::$AUTO_PREFIX) {
+				$defaultValue = getFieldDefaultValue($con,$formname,$fieldkey);
+				$isrevisionneeded = false; // isRevisionNeeded($con, $formname);
+				if ($isrevisionneeded) {
+					if ($fieldvalue == $defaultValue) {
+						$fieldvalue = $defaultValue . '' . $nextid;
+					} else {
+						$fieldvalue = generateIdValue ( $con, $formname, $fieldvalue, $fieldkey );
+					}
+				} else {				
+					$prefixid = getAutoMaxId($con, $formname,$fieldkey);
+					$fieldvalue = $defaultValue . '' . $prefixid;
+				}
+				$inpfields->{$fieldkey} = $fieldvalue;
+			} else if ($fieldType == FieldType::$AUTO_SUFFIX) {
+				$defaultValue = getFieldDefaultValue($con,$formname,$fieldkey);			
+				$suffixid = getAutoMaxId($con, $formname,$fieldkey);
+				$fieldvalue = $suffixid . '' . $defaultValue;
+				$inpfields->{$fieldkey} = $fieldvalue;
+			} else if ($fieldType == FieldType::$DATE) {
+				if ($fieldvalue != '') {
+					$fieldvalue = date ( 'Y-m-d', strtotime ( $fieldvalue ) );
+				}
+			} else if ($fieldType == FieldType::$MOBILE_NO) {
+				if ($fieldvalue != '') {
+				$fieldvalue = str_replace(" ", "", $fieldvalue);
+				}
+			} else if ($fieldType == FieldType::$DATE_TIME) {
+				if ($fieldvalue != '' && IsTimeZoneSupport ()) {
+					$tzoffset = getOrganizationTZOffset ( $con );
+					$fieldvalue = getConvertedDateTimeByTZ ( $tzoffset, $fieldvalue, true );
+				}
+			} else if ($fieldType == FieldType::$TIME) {
+				if ($fieldvalue != '' && IsTimeZoneSupport ()) {
+					$tzoffset = getOrganizationTZOffset ( $con );
+					$fieldvalue = getConvertedTimeByTZ ( $tzoffset, $fieldvalue, true );
+				}
+			} else if ($fieldType == FieldType::$OWN_REFERENCE) {
+				$fieldkey = 'own_' . $formentity_id_key;
+			} else if ($fieldType == FieldType::$IMAGE || $fieldType == FieldType::$PHOTO_CAPTURE || $fieldType == FieldType::$SIGNATURE_CAPTURE || $fieldType == FieldType::$DOCUMENT_MULTI_FIELD || $fieldType == FieldType::$DOCUMENT_FIELD) {
+				if (string_begins_with ( $fieldvalue, 'C:' ) && strpos ( $fieldvalue, 'fakepath' )) {
+					$fieldvalue = substr ( $fieldvalue, 12 );
+				}
+			} else if ($fieldType == FieldType::$FORM_HISTORY) {
+				continue;
+			} else if ($fieldType == FieldType::$REFERENCE_ENTITYID) {
+				$refnamefield=str_replace ( "id", "name", $fieldkey );
+				$refnamefieldval=$inpfields->{$refnamefield};
+				if (! is_numeric ( $fieldvalue ) || (is_numeric ($fieldvalue) && $fieldvalue == $refnamefieldval)) { // && $fieldvalue == $defaultValue
+					$fieldvalue = checkReferenceFieldValue ( $con, $formname, $fieldkey, $fieldvalue );
+					//$inpfields->{$fieldkey} = $fieldvalue;
+				}				
+				if ($fieldkey == 'table_6_1_table_6_id' || $fieldkey == 'table_6_2_table_6_id')
+					continue;
+				if ($fieldvalue == '') {
+					$fieldvalue = null;
+				} else {
+					$isgroupvalue = false;
+					$tokens = explode ( '@', $fieldvalue );
+					if ($tokens === false) {
+					} else {
+						if (sizeof ( $tokens ) == 2) {
+							$isgroupvalue = $tokens [0] == 'group' && $tokens [1] != "";
+							$fieldvalue = $tokens [1];
+						}
+					}
+				}
+				$formpos = substr ( $fieldkey, strpos ( $fieldkey, '_table' ), - 3 );
+				$formpos = substr ( $formpos, 1 );
+				$nthins = substr ( $fieldkey, 1 + strlen ( $formpos ) );
+				$nth1 = substr ( $nthins, strpos ( $nthins, 'table' ), - 3 );
+				$nth = substr ( $nthins, 0, strpos ( $nthins, '_' ) );
+				$refformname = substr ( $nthins, strpos ( $nthins, 'table' ), - 3 );
+				$rformtype = getFormType ( $con, $refformname );
+				if ($rformtype == FormType::$HIERARCHYSTRUCTURE || $rformtype == FormType::$HIERARCHYVALUE) {
+					if ($rformtype == FormType::$HIERARCHYVALUE) {
+						$hSformname = getHStructureFormName ( $con, $refformname );
+						$fieldkey = $hSformname . '_' . $nth . '_' . $hSformname . '_id';
+					}
+					
+					$isadded = isaddedHTEntity ( $con, $formname, $nextid, $fieldvalue );
+					if (! $isadded) {
+						addHTEntityForm ( $con, $formname, $nextid, $fieldvalue, $nth );
+					}
+				} else {
+					$hSformname = getHStructureFormName ( $con, $refformname );
+					if ($hSformname != '') {
+						$fieldkey = $hSformname . '_' . $nth . '_' . $hSformname . '_id';
+						if ($fieldvalue != '') {
+							addHTEntityForm ( $con, $refformname, $nextid, $fieldvalue, $nth );
+						}
+					} else {
+						// $nthinstnace = findNthInstance($con, $formname, $refformname);
+						// $fieldkey = $refformname . '_' . $nthinstnace . '_' . $refformname . '_id';
+					}
+				}
+			}else if(EndsWith($fieldkey, "_OTG_Code") ){
+			$fieldvalue=generateRandomString(6);
+			}
+             if ($formname == 'table_6' && $fieldkey == 'Is_Admin') {
+					$profileid = $inpfields->{'table_2_0_table_2_id'};
+					if ($profileid == "1") {
+						$fieldvalue = 'Yes';
+					} else {
+						$fieldvalue = 'No';
+					}
+				}
+			$fieldnamestr = $fieldnamestr . $fieldkey . ',';
+			if($fieldkey == "Type"){
+				$fieldvalue = "Check Out";
+			} else if ($fieldkey == "In_Location"){
+				$fieldvalue = "This is Auto Check out";
+			} else if ($fieldkey == "In_Time"){
+				$currenttime = date ( 'Y-m-d H:i:s' );
+				$previousdate = add_days ( - 1, $currentdate );
+				$previousdate = explode(" ",$previousdate);
+				$fieldvalue = $previousdate . " 17:00:00";
+			} else if ($fieldkey == "In_Location_latitude" || $fieldkey == "In_Location_longitude"){
+				$fieldvalue = "";
+			}
+			if ($fieldvalue != null) {
+				if ($isgroupvalue) {
+					$groupvalue = $fieldvalue;
+					$fieldstr = $fieldstr . 'NULL,' . '\'' . $fieldvalue . '\'' . ',';
+					$dbfieldstr = $dbfieldstr . 'NULL,' . '\'' . $fieldvalue . '\'' . ',';
+				} else {
+					$ofieldvalue = $fieldvalue;
+					$fieldvalue = mysql_escape_string ( $fieldvalue );
+					if ($fieldkey == FieldName::$ORGANIZATION_NAME && $formname == 'table_21') {
+						$cmpname = $fieldvalue;
+					}
+					$fieldstr = $fieldstr . '\'' . $fieldvalue . '\'' . ',';
+					if ($ofieldvalue == $fieldvalue) {
+						$dbfieldstr = $dbfieldstr . '\'' . $fieldvalue . '\'' . ',';
+					} else {
+						$ofieldvalue = str_replace ( '"', '""', $ofieldvalue );
+						$dbfieldstr = $dbfieldstr . '"' . $ofieldvalue . '"' . ',';
+					}
+				}
+			} else {
+				if ($isgroupvalue) {
+					$isgroupvalue = false;
+				} else {
+					if ($fieldType == FieldType::$REFERENCE_ENTITYID || $fieldType == FieldType::$REFERENCE_GROUP) {
+						$fieldstr = $fieldstr . 'NULL,';
+						$dbfieldstr = $dbfieldstr . 'NULL,';
+					} else {
+						if ($fieldkey == FieldName::$DISPLAY_NAME && $formname == 'table_21' && $fieldvalue == '') {
+							$fieldvalue = $cmpname;
+							$fieldstr = $fieldstr . '\'' . $fieldvalue . '\'' . ',';
+							$dbfieldstr = $dbfieldstr . '\'' . '' . '\'' . ',';
+						} else {
+							$fieldstr = $fieldstr . '\'' . '' . '\'' . ',';
+							$dbfieldstr = $dbfieldstr . '\'' . '' . '\'' . ',';
+						}
+					}
+				}
+			}
+		}
+	}
+	$username = getUserId ( $con );
+	if(!strpos($fieldnamestr, "table_6_1_table_6_id") > 0){
+	$fieldnamestr = $fieldnamestr . 'table_6_1_table_6_id,';
+	$historystr = '\'' . $username . '\'' . ',';
+	}	
+	$fieldnamestr = $fieldnamestr . 'table_6_2_table_6_id,';
+	$historystr = $historystr . '\'' . $username . '\'' . ',';
+	$currenttime = date ( 'Y-m-d H:i:s' );
+	$previousdate = add_days ( - 1, $currentdate );
+	$previousdate = explode(" ",$previousdate);
+	$currenttime = $previousdate . " 17:00:00";
+	$fieldnamestr = $fieldnamestr . 'createdon' . ',';
+	$historystr = $historystr . '\'' . $currenttime . '\'' . ',';
+	$fieldnamestr = $fieldnamestr . 'updatedon' . ',';
+	$historystr = $historystr . '\'' . $currenttime . '\'' . ',';
+	$fieldnamestr = $fieldnamestr . 'viewedon';
+	$historystr = $historystr . '\'' . $currenttime . '\'';
+	
+	$fieldstr = $fieldstr . $historystr;
+	$dbfieldstr = $dbfieldstr . $historystr;
+	$stmtres = array ();
+	$stmtres [] = $fieldnamestr;
+	$stmtres [] = $fieldstr;
+	$stmtres [] = $dbfieldstr;
+	return $stmtres;
+}
+
+
 function getRoleIdFromProfileId($con, $profileid) {
 	$sql = "select role.table_4_id from table_4_frm role left join table_2_frm profile on profile.Profile_Name = role.Role_Name where table_2_id='$profileid';";
 	$result = getResultArray ( $con, $sql );
@@ -3504,7 +3807,7 @@ function isSqlLogEnabled($appid, $con) {
 	} else {
 		return false;
 	}
-	return true;
+	//return true;
 }
 function isCronLogEnabled($appid, $con) {
 	$sql = 'select f14 from ' . DBINFO::$APPDBNAME . '.applicationlist where appid = ' . '\'' . $appid . '\'';
@@ -5091,7 +5394,7 @@ function processRegistration($con, $obj, $appid, $productname, $editionindex, $n
 			if ($isinstancesignup == "1") {
 			$updateduserid="";
 			}
-			$sql = "insert into table_21_frm values('0','$companyname','','$address','$emailid','$phonenum','$mobilenum','','','Financial Year','INR,Rs.','$emailstatus','$smsstatus','dd-MM-yyyy','(GMT +05:30)-Asia/Kolkata','0','Basic','$ismobileclient','$appid','0','$companyname','0','$currenttime','$userid','$userdesignation','','','','','','','Yes','No','06:00:00','$emailid','On','Yes','15 Minutes','$updateduserid','','','');";
+			$sql = "insert into table_21_frm values('0','$companyname','','$address','$emailid','$phonenum','$mobilenum','','','Financial Year','INR,Rs.','$emailstatus','$smsstatus','dd-MM-yyyy','(GMT +05:30)-Asia/Kolkata','0','Basic','$ismobileclient','$appid','0','$companyname','0','$currenttime','$userid','$userdesignation','','','','','','','Yes','No','06:00:00','$emailid','On','Yes','15 Minutes','','','$updateduserid','','','');";
 			$result = execSQL ( $con, $sql );
 			$infotableid = getNextIdValue ( $con, "licenseinfo", "id" );
 			$license_start_Date = date ( "Y-m-d" );
@@ -7004,6 +7307,29 @@ function getMonthValue($value) {
 	}
 	return $datevalue;
 }
+function getCurrentMonthValue($value) {	
+	$currentdatetime = date("Y-m-d");
+	$datearray = explode("-", $currentdatetime);
+	$year = $datearray[0];
+	$currentmonth = $datearray[1];
+	$valuearr = stringSplitByDelimit($value, ",");
+		$days = $valuearr[0];
+		$month = $valuearr[1];
+		if($month == 1){
+		$month=	$currentmonth;
+		}
+		$hamin = $valuearr[2];
+		$harr = stringSplitByDelimit($hamin, ":");
+		$hours = $harr[0];
+		$min = $harr[1];
+		$datecount = date('t');
+		if($days > $datecount){
+			$days = $datecount;
+		}
+		$datevalue = getDateValue($year, $days, $month, $min, $hours, true);
+	
+	return $datevalue;
+}
 function getDailyDateValue($value, $year, $month, $days) {
 	$valuearr = stringSplitByDelimit ( $value, "," );
 	$value = $valuearr [0];
@@ -7016,6 +7342,25 @@ function getDailyDateValue($value, $year, $month, $days) {
 	}
 	$days = $days + $value;
 	$datevalue = getDateValue ( $year, $days, $month, $min, $hours, true );
+	return $datevalue;
+}
+function getDailyCurrentDateValue($value) {
+	$currentdatetime = date("Y-m-d");
+	$datearray = explode("-", $currentdatetime);
+	$year = $datearray[0];
+	$month = $datearray[1];
+	$days = $datearray[2];
+	$valuearr = stringSplitByDelimit($value, ",");
+	$value = $valuearr[0];
+	$hamin = $valuearr[1];
+	$harr = stringSplitByDelimit($hamin, ":");
+	$hours = $harr[0];
+	$min = $harr[1];
+	if ($value == "-1") {
+		$value = "0";
+	}
+	$days = $days + $value;
+	$datevalue = getDateValue($year, $days, $month, $min, $hours, true);
 	return $datevalue;
 }
 function getWeekValue($value) {
@@ -7035,6 +7380,26 @@ function getWeekValue($value) {
 			return $date;
 		}
 	}
+}
+function getCurrentWeekValue($value,$currentdate) {
+	$valuearr = stringSplitByDelimit($value, ",");
+	$nthweek = $valuearr[0];
+	$nthday = $valuearr[1];
+	$hamin = $valuearr[2];
+	$harr = stringSplitByDelimit($hamin, ":");
+	$hours = $harr[0];
+	$min = $harr[1];	
+	$isfound=false;
+	$resultdate="";
+	$darray = explode("-", $currentdate);
+	$tarray = explode(" ", $currentdate);
+	$dtime = $tarray[1];
+	$cday = $darray[0];
+	if ($cday == $nthday && $dtime == $hamin) {
+		$resultdate=$currentdate;
+		$isfound=true;
+	}
+	return $resultdate;
 }
 function getWeekArray($month, $hours, $smin) {
 	$end_date = date ( 'l-Y-m-d', strtotime ( '-1 second', strtotime ( '+1month', strtotime ( date ( $month ) . '/01/' . date ( 'Y' ) . '00:00:00' ) ) ) );
@@ -8252,6 +8617,66 @@ function checkValidUsermail($con,$emailid){
 	}
 }
 
+function split($token,$str){
+	$valuearr = explode ( $token, $str );
+	return $valuearr;
+}
 
+function mysql_escape_string($str){
+	$dbcon =  mysqli_connect(getDBHost(), getDBUser(), getDBPass(),DBINFO::$COMMONDBNAME);
+  	$value= mysqli_real_escape_string($dbcon,$str);	
+	mysqli_close ($dbcon );  
+	return $value;
+}
 
+function mysql_query($sql){
+	return mysqli_query($sql);
+}
+
+function mysql_fetch_array($arr){
+	return mysqli_num_rows($arr);
+}
+
+function sendForwardEmailWarning($con) {
+	
+	$subject = "Account Activation Alert!";
+	
+	$content = "<html>
+	<head>
+		<title></title>
+	</head>
+	<body>
+		<p dir='ltr' style='line-height:1.38;margin-top:0pt;margin-bottom:0pt;'>
+			&nbsp;</p>
+		<p dir='ltr' style='line-height:1.38;margin-top:0pt;margin-bottom:0pt;'>
+			<b id='docs-internal-guid-724c83b1-f746-609f-3f03-9beb63aeed1b' style='font-weight:normal;'><span style='font-size: 13.333333333333332px; font-family: Arial; color: rgb(34, 34, 34); background-color: rgb(255, 255, 255); vertical-align: baseline; white-space: pre-wrap;'>Hi,</span></b></p>
+		<br />
+		<p dir='ltr' style='line-height:1.38;margin-top:0pt;margin-bottom:0pt;'>
+			<b id='docs-internal-guid-724c83b1-f746-609f-3f03-9beb63aeed1b' style='font-weight:normal;'><span style='font-size: 13.333333333333332px; font-family: Arial; color: rgb(34, 34, 34); background-color: rgb(255, 255, 255); vertical-align: baseline; white-space: pre-wrap;'>I am Suresh Shamalan your account manager, your account is not active now.</span></b></p>
+		<br />
+		<span style='font-size: 13.333333333333332px; font-family: Arial; color: rgb(34, 34, 34); background-color: rgb(255, 255, 255); vertical-align: baseline; white-space: pre-wrap;'>But your lead automation forwarding is not deactivated. </span><br class='kix-line-break' />
+			<br class='kix-line-break' />
+			<span style='font-size: 13.333333333333332px; font-family: Arial; color: rgb(34, 34, 34); background-color: rgb(255, 255, 255); vertical-align: baseline; white-space: pre-wrap;'>So remove forwarding from your mail address.</span><br class='kix-line-break' />
+			<br class='kix-line-break' />
+			<span style='font-size: 13.333333333333332px; font-family: Arial; color: rgb(34, 34, 34); background-color: rgb(255, 255, 255); vertical-align: baseline; white-space: pre-wrap;'>Thank You,</span><br class='kix-line-break' />
+			<span style='font-size: 13.333333333333332px; font-family: Arial; color: rgb(34, 34, 34); background-color: rgb(255, 255, 255); vertical-align: baseline; white-space: pre-wrap;'>Suresh Shamalan,</span><br class='kix-line-break' />
+			<span style='font-size: 13.333333333333332px; font-family: Arial; color: rgb(34, 34, 34); background-color: rgb(255, 255, 255); vertical-align: baseline; white-space: pre-wrap;'>Account Manager.</span></b></p>
+		<p dir='ltr' style='line-height:1.38;margin-top:0pt;margin-bottom:0pt;'>
+			<b id='docs-internal-guid-724c83b1-f746-609f-3f03-9beb63aeed1b' style='font-weight:normal;'><span style='font-size: 13.333333333333332px; font-family: Arial; color: rgb(34, 34, 34); background-color: rgb(255, 255, 255); vertical-align: baseline; white-space: pre-wrap;'>+91-8939148148</span></b></p>
+			</body>
+</html>
+    ";
+    $sql = "select * from forwardemailtracker where status = 'Open'";
+    $resultarray = getResultArray ( $con, $sql );
+    for($i = 0; $i < sizeof($resultarray); $i++){
+    	$emailid = $resultarray[$i][0];
+    	$reporteddate = $resultarray[$i][2];
+    	$emailids = array ();
+		$emailids [] = $emailid;
+		$reason = smtpmail ( $emailids, "Cratio CRM Email Forward Warning", $content, "Cratio CRM", "", false, "", "sales@cratio.com" );
+		echo $reason;
+		$usql = "update forwardemailtracker set status = 'Closed' where emailid = '$emailid' and reporteddate = '$reporteddate'";
+		execSQL($con, $usql);	
+    }
+}
 ?>

@@ -32,3 +32,5 @@ sudo setfacl -R -m u:www-data:rwX -m u:$(whoami):rwX /var/www/mautic/
 sudo setfacl -dR -m u:www-data:rwX -m u:$(whoami):rwX /var/www/cops/
 sudo setfacl -R -m u:www-data:rwX -m u:$(whoami):rwX /var/www/cops/
 
+
+

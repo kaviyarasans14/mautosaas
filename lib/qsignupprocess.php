@@ -50,44 +50,65 @@ try{
 		throw new Exception ( "Not able to connect to DB" );
 	}
 	startTransaction($con);
-	if($_REQUEST['checkavailability']){
-	$domain=$_REQUEST['checkavailability'];
-	$isavailable=checkDomainAvailability($con,$domain);
-	if($isavailable){
-       die("domainnotexists");
-	}else{
-	die("domainexist");
+	if (isset ( $_REQUEST ["params"] )) {
+		setREQUESTPARAM ( $_REQUEST ["params"] );
 	}
-	}else{
-		if(!isset($_REQUEST['userdomain'])){
-		die("Domain Not Found!");	
+	if(isset($_REQUEST['checkavailability'])){
+		$domain=$_REQUEST['checkavailability'];
+		$domain = strtolower($domain);
+		$isavailable=checkDomainAvailability($con,$domain);
+		if($isavailable){
+      			die("domainnotexists");
+		}else{
+			die("domainexist");
 		}
-		$companyname=$_REQUEST['companyname'];
-		$firstname=$_REQUEST['firstname'];
-		$lastname=$_REQUEST['lastname'];
+	} else if(isset($_REQUEST['checkemailavailability'])){
+		$email=$_REQUEST['checkemailavailability'];
+		$email = strtolower($email);
+		$isavailable=checkEmailAvailability($con,$email);
+		if($isavailable){
+      			die("emailnotexists");
+		}else{
+			die("emailexist");
+		}
+	} else {
+		$frommail=$_REQUEST['email'];
+		$userdetails = getUserDetails($con,$frommail);
+		if(sizeof($userdetails) == 0){
+			header('www.leadsengage.com');
+		}
+		$firstname = $userdetails[0][0];
+		$lastname = $userdetails[0][1];
+		$companyname = $userdetails[0][2];
+		$pwd = $userdetails[0][3];
+		$domain = $userdetails[0][4];
+		$usermobile = $userdetails[0][5];
+		$domain = strtolower($domain);
 		$fromname=$firstname." ".$lastname;
-		$frommail=$_REQUEST['useremail'];
-		$domain=$_REQUEST['userdomain'];
-		$usermobile=$_REQUEST['mobilenum'];
-		$pwd=$_REQUEST['password'];
 		displaysignuplog("Company:$companyname");
-		displaysignuplog("User Name:$fromname");
 		displaysignuplog("User Mail:$frommail");
 		displaysignuplog("Domain:$domain");
+		$isavailable=checkDomainAvailability($con,$domain);
+		if(!$isavailable){
+      		$url="http://$domain.".MAUTIC_DOMAIN."/index.php";
+			die("url=".$url);
+			//return;
+		}
 		$response=createSaasDatabase($con);
 		if(isset($response['dbname'])){
 		$dbname=$response['dbname'];
 		$appid=$response['appid'];
-		$sql="insert into applicationlist(appid,domain,company,username,usermail,usermobile) values('$appid','$domain','$companyname','$fromname','$frommail','$usermobile');";
+		$sql="insert into applicationlist(appid,f5,f2,f3,f4,f11) values('$appid','$domain','$companyname','$fromname','$frommail','$usermobile');";
 		displaysignuplog("SQL:".$sql);
 		$result = execSQL ( $con, $sql );
+		updateLicenseInfo($con, $appid,$dbname);
 		displaysignuplog("DB Name:".$dbname);
 		$elasticuser="";
 		$elasticpwd="";
 		if(strpos(MAUTIC_DOMAIN, "leadsengage.com") !== false || strpos(MAUTIC_DOMAIN, "cratio.in") !== false){
-            $status=createSubAccount(
+            	$status=createSubAccount(
             	"$domain@leadsengage.net","LeadsEngage@44#");
-            if($status[1] == ""){
+            	if($status[1] == ""){
                 $elasticuser="$domain@leadsengage.net";
                 $elasticpwd=$status[0];
                 $isupdated=updateHTTPNotification($status[0], "http://$domain.".MAUTIC_DOMAIN."/mailer/elasticemail/callback");
@@ -102,23 +123,19 @@ try{
                         $response['alert']="Sub Account Profile Not Updated.Do Manually.";
 					}
                 }
-            }else{
+            	}else{
                 $response['alert']="Elastic Sub Account Creation Failed:".$status[1];
-            }
+            	}
 		}
 
 		createMauticConfigFile($domain,$dbname,$fromname,$frommail,$elasticuser,$elasticpwd);
 		createMauticFirstUser($con,$dbname,$frommail,$firstname,$lastname,$pwd);
-
-
+		
 		$url="http://$domain.".MAUTIC_DOMAIN."/index.php";
-		$url ='../qsignup.php?message=success&url='.$url;
-		if(isset($response['alert'])){
-            $url.="&notify=".$response['alert'];
-		}
-		header ( 'Location:' . $url );
+		die("success=".$url);
+		//header ( 'Location:' . $url );
 		}else if(isset($response['error'])){
-			$url ='qsignup.php?message=' .$response['error'];
+			$url ='thank-you.php?message=' .$response['error'];
 			header ( 'Location:' . $url );
 		}
 	}
@@ -143,9 +160,42 @@ function getEncodedPwd($pwd){
 	return $pwd;
 }
 function checkDomainAvailability($con,$domain){
-$sql="select appid from applicationlist where domain='$domain';";
+$sql="select appid from applicationlist where f5='$domain';";
+displaysignuplog("SQL:".$sql);
 $dbrow = getResultArray ( $con, $sql );
 return sizeof($dbrow) == 0;
+}
+function checkEmailAvailability($con,$email){
+$sql="select appid from applicationlist where f4='$email';";
+$dbrow = getResultArray ( $con, $sql );
+$emailexist = true;
+if(sizeof($dbrow) != 0){
+	return $emailexist = false;
+} else {
+	return checkEmailAvail($con,$email);
+}
+
+}
+
+function checkEmailAvail($con,$email){
+$leadtable = DBINFO::$SIGNUP_DBNAME.".leads";
+$sql="select email from $leadtable where email='$email';";
+$dbrow = getResultArray ( $con, $sql );
+$emailexist = true;
+if(sizeof($dbrow) != 0){
+	return $emailexist = false;
+} else {
+	return true;
+}
+
+}
+
+function getUserDetails($con,$email){
+$leadtable = DBINFO::$SIGNUP_DBNAME.".leads";
+$sql="select firstname,lastname,company_new,password,domain,mobile from $leadtable where email='$email';";
+displaysignuplog("SQL:".$sql);
+$dbrow = getResultArray ( $con, $sql );
+return $dbrow;
 }
 function createFreeAppIDS($con){
 	$maxlimit=10;
@@ -164,6 +214,59 @@ function createFreeAppIDS($con){
 		}
 	}
 	return;
+}
+function updateLicenseInfo($con, $appid, $dbname){
+	$currentdatetime=date('Y-m-d H:i:s');
+	$currentdate=date('Y-m-d');
+	$enddate = "";
+	$editionindex = DBINFO::$DEFAULT_EDITIONINDEX;
+	$licenseinfotable = $dbname.".licenseinfo";
+	$sql = "select featureset from editiontable where editionindex = '$editionindex'";
+	displaysignuplog("Edition SQL:".$sql);
+	$dbrow = getResultArray ( $con, $sql );
+	$featureset = $dbrow[0][0];
+	$isql = "insert into appeditiontable values ('$appid','$editionindex','$featureset')";
+	displaysignuplog("Insert Edition SQL:".$isql);
+	$result = execSQL ( $con, $isql );
+	$sql = "select featureindex,value from editionvaluetable where editionindex = '$editionindex'";
+	displaysignuplog("Select Feature SQL:".$sql);
+	$dbrow = getResultArray ( $con, $sql );
+	$licenseinfoval = "";	
+//	$sql = "insert into $licenseinfotable values ('0','0','0','0','0','0','0','','','','0','0','0','Active');";
+//	displaysignuplog("Insert  SQL:".$isql);
+//	$result = execSQL ( $con, $sql );
+	for($i = 0; $i < sizeof($dbrow); $i++){
+		$featureindex = $dbrow[$i][0];
+		$featurevalue = $dbrow[$i][1];
+		/*if ($featureindex == LICENSE::$NOOFUSERS){
+			$actualusercount = $featurevalue - 1;
+			$sql = "update $licenseinfotable set total_user_count ='$featurevalue',active_user_count='$actualusercount';";
+			$result = execSQL ( $con, $sql );
+		}
+		if ($featureindex == LICENSE::$TOTALRECORDCOUNT){
+			$sql = "update $licenseinfotable set total_record_count ='$featurevalue',actual_record_count='$featurevalue';";
+			$result = execSQL ( $con, $sql );
+		}
+		if ($featureindex == LICENSE::$TOTAL_ATTACHMENT_SIZE){
+			$sql = "update $licenseinfotable set total_attachement_size ='$featurevalue',actual_attachement_size='$featurevalue';";
+			$result = execSQL ( $con, $sql );
+		}
+		if ($featureindex == LICENSE::$TOTAL_EMAIL_COUNT){
+			$sql = "update $licenseinfotable set total_email_count  ='$featurevalue',actual_email_count ='$featurevalue';";
+			$result = execSQL ( $con, $sql );
+		}
+		if($featureindex == LICENSE::$DURATIONOFDAYS){
+			if($featurevalue != "UL"){
+				$daysval = "+".$featurevalue." days";
+				$enddate = strtotime(date("Y-m-d", strtotime($currentdate)) . " $daysval");
+			}
+			$sql = "update $licenseinfotable set licensed_days = '$featurevalue', license_start_date  ='$currentdate',license_end_date ='$enddate';";
+			$result = execSQL ( $con, $sql );
+		}*/
+		$isql = "insert into customfeaturetable values ('$appid','$featureindex','$featurevalue','$currentdatetime')";
+displaysignuplog("Insert Custom SQL:".$isql);
+		$result = execSQL ( $con, $isql );
+	}
 }
 function createSaasDatabase($con) {
 	$response=array();
@@ -204,6 +307,7 @@ function createSaasDatabase($con) {
 }
 
 function createMauticConfigFile($domain,$dbname,$fromname,$frommail,$elastic_user,$elastic_pwd){
+	$commondbname = DBINFO::$APPDBNAME;
 	$parameters='<?php
 	$parameters = array(
 		\'db_driver\' => \'pdo_mysql\',
@@ -247,9 +351,10 @@ function createMauticConfigFile($domain,$dbname,$fromname,$frommail,$elastic_use
 	\'default_timezone\' => \'Asia/Kolkata\',
 	\'locale\' => \'en_US\',
 	\'email_frequency_number\' => 3,
-\'email_frequency_time\' => \'DAY\',
-\'mailer_is_owner\' => 0,
-\'background_import_if_more_rows_than\' => 5000,
+	\'email_frequency_time\' => \'DAY\',
+	\'mailer_is_owner\' => 0,
+	\'background_import_if_more_rows_than\' => 5000,
+	\'video_url\' => \'https://www.youtube.com/embed/6mNKeUMmFGM\',
 	);
 	?>';
 	$configpath=MAUTIC_ROOT_DIR."/app/config/".$domain;
