@@ -15,6 +15,7 @@ if (isset($_REQUEST['email'])) {
 <html>
 	<head>
 		<title>Activation | Leadsengage</title>
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
 		<script src="../js/index.js"></script>
 		
 	</head>
