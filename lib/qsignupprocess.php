@@ -332,7 +332,11 @@ function createMauticConfigFile($domain,$dbname,$fromname,$frommail,$elastic_use
 		\'mailer_spool_type\' => \'file\',
 		\'mailer_spool_path\' => \'%kernel.root_dir%/spool/'.$domain.'\',
 		\'secret_key\' => \'61fe7d5e17d03e585ebf52ff75224c30a47d449860607df686ddccfcd85fc2df\',
+<<<<<<< Updated upstream
 		\'site_url\' => \'http://'.$domain.'.'.MAUTIC_DOMAIN.'/\',
+=======
+		\'site_url\' => \'https://'.$domain.'.'.MAUTIC_DOMAIN.'/\',
+>>>>>>> Stashed changes
 			\'cache_path\' => \''.MAUTIC_ROOT_DIR.'/app/cache/'.$domain.'\',
 		\'log_path\' => \''.MAUTIC_ROOT_DIR.'/app/logs/'.$domain.'\',
 		\'image_path\' => \'media/images/'.$domain.'\',
