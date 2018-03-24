@@ -72,19 +72,33 @@ try{
             die("emailexist");
         }
     } else {
-        $frommail=$_REQUEST['email'];
-        $userdetails = getUserDetails($con,$frommail);
-        if(sizeof($userdetails) == 0){
-            header('www.leadsengage.com');
-        }
-        $firstname = $userdetails[0][0];
-        $lastname = $userdetails[0][1];
-        $companyname = $userdetails[0][2];
-        $pwd = $userdetails[0][3];
-        $domain = $userdetails[0][4];
-        $usermobile = $userdetails[0][5];
-        $domain = strtolower($domain);
-        $fromname=$firstname." ".$lastname;
+	if(!isset($_REQUEST['signupmode'])){
+       		$frommail=$_REQUEST['email'];
+	        $userdetails = getUserDetails($con,$frommail);
+        	if(sizeof($userdetails) == 0){
+        	    header('Location:www.leadsengage.com');
+        	}
+	        $firstname = $userdetails[0][0];
+        	$lastname = $userdetails[0][1];
+	        $companyname = $userdetails[0][2];
+        	$pwd = $userdetails[0][3];
+        	$domain = $userdetails[0][4];
+        	$usermobile = $userdetails[0][5];
+        	$domain = strtolower($domain);
+        	$fromname=$firstname." ".$lastname;
+	} else {
+		if(!isset($_REQUEST['userdomain'])){
+			die("Domain Not Found!");	
+		}
+		$companyname=$_REQUEST['companyname'];
+		$firstname=$_REQUEST['firstname'];
+		$lastname=$_REQUEST['lastname'];
+		$fromname=$firstname." ".$lastname;
+		$frommail=$_REQUEST['useremail'];
+		$domain=$_REQUEST['userdomain'];
+		$usermobile=$_REQUEST['mobilenum'];
+		$pwd=$_REQUEST['password'];
+	}
         displaysignuplog("Company:$companyname");
         displaysignuplog("User Mail:$frommail");
         displaysignuplog("Domain:$domain");

@@ -13,15 +13,15 @@ function validateForm() {
         var password = document.forms['signup']['password'].value;               
         if (firstname == null || firstname == ''){
 		document.getElementById('error').style.display = "block";
-                document.getElementById('error').innerHTML = "Please fill your firstname!";                                      
+                document.getElementById('error').innerHTML = "Please Fill Your First Name!";
                 return false;
 	} else if (lastname == null || lastname == ''){
 		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Please fill your lastname!";                                      
+		document.getElementById('error').innerHTML = "Please Fill Your Last Name!";
 	        return false;
         }else if (cname == null || cname == '') {
 		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Please fill your companyname!";                                   
+		document.getElementById('error').innerHTML = "Please Fill Your Company Name";
 		return false;
 	}          
 				              
@@ -34,21 +34,21 @@ function validateForm() {
 	if (password == null || password == '') {
 		document.getElementById("domain").style.borderColor = "#e66c3e";
 		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Please fill your password!";                       
+		document.getElementById('error').innerHTML = "Please Fill Your Password!";
 		return false;
-	} else if (password.toString().length < 4) {
+	} else if (password.toString().length < 6) {
 		document.getElementById("domain").style.borderColor = "#e66c3e";
 		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Please fill your password atleast 4 character!";
+		document.getElementById('error').innerHTML = "Please Fill Your Password Atleast 6 Character!";
 		return false;
 	} 
 	if (mobileno == null || mobileno == '') {
 		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Please fill your mobileno!";
+		document.getElementById('error').innerHTML = "Please Fill Your Phone No!";
 		return false;  
 	} else if (isNaN(mobileno)) {
 		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Please fill valid mobileno!";                    
+		document.getElementById('error').innerHTML = "Phone No doesn't look right. Use the Valid one";
                     
 		return false; 
 	}
@@ -66,15 +66,15 @@ function validateEmail(emailid){
 	var isValidemail = true;
 	if (emailid == null || emailid == '') {
 		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Please fill your emailid!";  
+		document.getElementById('error').innerHTML = "Please Fill Your Email!";
 		isValidemail=false;                  
 	}else if (!emailid.match(mailformat)) {
 		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Please fill valid email!";   
+		document.getElementById('error').innerHTML = "Email doesn't look right. Use the Valid one";
 		isValidemail=false;                  
 	} else if (!reg.test(emailid)){
 		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Please provide your business email!";   
+		document.getElementById('error').innerHTML = "We don't allow direct signup without business mailid. Please email support@leadsengage.com for Free Trial.";
 		isValidemail=false;           
 	}	
 	if(isValidemail){
@@ -102,7 +102,7 @@ function checkEmail(email){
 				var response = xmlhttp.responseText;                               
 				if (response.toString().indexOf("emailexist") != -1) {
 					document.getElementById('error').style.display = "block";
-					document.getElementById('error').innerHTML = "Looks like this Email address is already in use. Please choose another to signup....";
+					document.getElementById('error').innerHTML = email+" already registered with us";
 					isValidemail=false;      
 				} 
 			}
@@ -120,9 +120,16 @@ function validateDomain(domain){
 	if (domain == null || domain == '') {
 		document.getElementById("domain").style.borderColor = "#e66c3e";                   
 		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Please fill valid domain name!";  
+		document.getElementById('error').innerHTML = "Domain doesn't look right. Use the Valid one";
 		isValiddomain=false;                  
 	}
+	var format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+	if(format.test(domain)){
+		document.getElementById("domain").style.borderColor = "#e66c3e";                   
+		document.getElementById('error').style.display = "block";
+		document.getElementById('error').innerHTML = "Domain doesn't look right. Use the Valid one";
+		isValiddomain=false;
+	} 
 	if (isValiddomain) {
 		var xmlhttp;
 		if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -136,7 +143,7 @@ function validateDomain(domain){
 				if (response.toString().indexOf("domainexist") != -1) {
 					document.getElementById("domain").style.borderColor = "#e66c3e";
 					document.getElementById('error').style.display = "block";
-					document.getElementById('error').innerHTML = "Looks like this domain is already in use. Please choose another to signup....";
+					document.getElementById('error').innerHTML = domain+" not available. Try another";
 					isValiddomain=false;      
 				} 
 			}

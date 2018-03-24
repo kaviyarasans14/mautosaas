@@ -27,7 +27,9 @@ if ($pdoconn) {
 }
 
 insertInLeadsengage($firstname,$lastname,$companyname,$frommail, $pwd,$usermobile, $domain, $con);
-header ( 'Location:' . 'https://leadsengage.com/thankyou/' );
+//header ( 'Location:' . 'https://leadsengage.com/thankyou/' );
+echo "<script>top.window.location = 'https://leadsengage.com/thankyou/'</script>";
+die;
 
 function insertInLeadsengage($firstname,$lastname,$companyname,$frommail, $pwd,$usermobile, $domain, $con){
 	$leadtable = DBINFO::$SIGNUP_DBNAME.".leads";
