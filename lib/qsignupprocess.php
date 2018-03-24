@@ -112,7 +112,14 @@ try{
         if(isset($response['dbname'])){
             $dbname=$response['dbname'];
             $appid=$response['appid'];
-            $sql="insert into applicationlist(appid,f5,f2,f3,f4,f11,f17,f18,f19,f20,f21,f26,f27,f28) values('$appid','$domain','$companyname','$fromname','$frommail','$usermobile','1','1','1','1','1','0','0','0');";
+            $migrationtable = $dbname.'.migrations';
+            $ssql = "select version from $migrationtable  order by version desc limit 1";
+            $dbrow = getResultArray ( $con, $sql );
+            $version = "0";
+            if(sizeof($dbrow) > 0){
+                $version = $dbrow[0][0];
+            }
+            $sql="insert into applicationlist(appid,f5,f2,f3,f4,f11,f17,f18,f19,f20,f21,f26,f27,f28,f6) values('$appid','$domain','$companyname','$fromname','$frommail','$usermobile','1','1','1','1','1','0','0','0','$version');";
             displaysignuplog("SQL:".$sql);
             $result = execSQL ( $con, $sql );
             updateLicenseInfo($con, $appid,$dbname);
@@ -246,7 +253,7 @@ function updateLicenseInfo($con, $appid, $dbname){
     displaysignuplog("Select Feature SQL:".$sql);
     $dbrow = getResultArray ( $con, $sql );
     $licenseinfoval = "";
-    $sql = "insert into $licenseinfotable values (1,'0','0','0','0','0','0','0','','','','0','0','0','Active');";
+    $sql = "insert into $licenseinfotable values (1,'0','0','0','0','0','0','0','','','','0','0','0','Active','$currentdate');";
     displaysignuplog("Insert  SQL:".$isql);
     $result = execSQL ( $con, $sql );
     for($i = 0; $i < sizeof($dbrow); $i++){
