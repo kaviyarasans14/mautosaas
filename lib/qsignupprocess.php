@@ -283,6 +283,8 @@ function updateLicenseInfo($con, $appid, $dbname){
             if($featurevalue != "UL"){
                 $daysval = "+".$featurevalue." days";
                 $enddate = date("Y-m-d",strtotime(date("Y-m-d", strtotime($currentdate)) . " $daysval"));
+                $sql = "update $licenseinfotable set email_validity = '$enddate'";
+                $result = execSQL ( $con, $sql );
             }
             $sql = "update $licenseinfotable set licensed_days = '$featurevalue', license_start_date  ='$currentdate',license_end_date ='$enddate';";
             $result = execSQL ( $con, $sql );
