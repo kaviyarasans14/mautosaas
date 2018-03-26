@@ -403,6 +403,7 @@ function createMauticConfigFile($domain,$dbname,$fromname,$frommail,$elastic_use
         mkdir ( $configpath, 0777 );
         umask ( $old );
     }
+    chmod(MAUTIC_ROOT_DIR."/app/cache", 0777);
     if (is_dir ( $configpath )) {
         $filepath=$configpath."/local.php";
         displaysignuplog("File Path:".$filepath);
