@@ -151,7 +151,7 @@ try{
 
             createMauticConfigFile($domain,$dbname,$fromname,$frommail,$elasticuser,$elasticpwd);
             createMauticFirstUser($con,$dbname,$frommail,$firstname,$lastname,$pwd);
-
+            commitTransaction($con);
             $url="http://$domain.".MAUTIC_DOMAIN."/index.php";
 		if(!isset($_REQUEST['signupmode'])){
             die("success=".$url);
