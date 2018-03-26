@@ -114,7 +114,7 @@ try{
             $appid=$response['appid'];
             $migrationtable = $dbname.'.migrations';
             $ssql = "select version from $migrationtable  order by version desc limit 1";
-            $dbrow = getResultArray ( $con, $sql );
+            $dbrow = getResultArray ( $con, $ssql );
             $version = "0";
             if(sizeof($dbrow) > 0){
                 $version = $dbrow[0][0];
@@ -153,8 +153,11 @@ try{
             createMauticFirstUser($con,$dbname,$frommail,$firstname,$lastname,$pwd);
 
             $url="http://$domain.".MAUTIC_DOMAIN."/index.php";
+		if(!isset($_REQUEST['signupmode'])){
             die("success=".$url);
-            //header ( 'Location:' . $url );
+		} else {
+            header ( 'Location:' . $url );
+		}
         }else if(isset($response['error'])){
             $url ='thank-you.php?message=' .$response['error'];
             header ( 'Location:' . $url );
@@ -254,7 +257,7 @@ function updateLicenseInfo($con, $appid, $dbname){
     $dbrow = getResultArray ( $con, $sql );
     $licenseinfoval = "";
     $sql = "insert into $licenseinfotable values (1,'0','0','0','0','0','0','0','','','','0','0','0','Active','$currentdate');";
-    displaysignuplog("Insert  SQL:".$isql);
+    displaysignuplog("Insert  SQL:".$sql);
     $result = execSQL ( $con, $sql );
     for($i = 0; $i < sizeof($dbrow); $i++){
         $featureindex = $dbrow[$i][0];
@@ -292,14 +295,18 @@ function updateLicenseInfo($con, $appid, $dbname){
 function createSaasDatabase($con) {
     $response=array();
     $sql = 'select min(appid) from freeappidtable where schemastatus = ' . '\'' . 'Created' . '\'';
+    displaysignuplog("Select APPID:".$sql);
     $resultrow = getResultArray ( $con, $sql );
     $appid = $resultrow [0] [0];
-    if($appid != ""){
+   	if($appid != ""){
+        $sql="delete from freeappidtable where appid='$appid ';";
+		displaysignuplog("SQL:".$sql);
+        $result = execSQL ( $con, $sql );
         $response['appid']=$appid;
         $response['dbname']= DBINFO::$APPDBNAME . $appid;
     }else{
         createFreeAppIDS ($con);
-        $sql = "select min(appid) from freeappidtable where schemastatus != 'Created'";
+        $sql = "select min(appid) from freeappidtable where schemastatus == 'Created'";
         $resultrow = getResultArray ( $con, $sql );
         $appid = $resultrow [0] [0];
         $sourcedbname = DBINFO::$APPDBNAME ."base";
@@ -307,21 +314,31 @@ function createSaasDatabase($con) {
         $sql = "show databases like '$sourcedbname';";
         $resultrows = getResultArray ( $con, $sql );
         if (sizeof ( $resultrows ) > 0) {
-            $sql = 'create database ' . $destdbname;
-            $result = execSQL ( $con, $sql );
-            $username = getDBUser ();
-            $hostname = getDBHost ();
-            $pwd = getDBPass ();
-            $sql = "mysqldump -h $hostname -u $username -p$pwd  -P " . DBINFO::$PORT . " $sourcedbname | mysql -h $hostname -u $username -p$pwd -P" . DBINFO::$PORT . " $destdbname;";
-            displaysignuplog("Dump Command:".$sql);
-            exec ( $sql );
-            $sql="delete from freeappidtable where appid='$appid ';";
-            displaysignuplog("SQL:".$sql);
-            $result = execSQL ( $con, $sql );
-            $response['appid']=$appid;
-            $response['dbname']= DBINFO::$APPDBNAME . $appid;
+        	$sql = "show databases like '$destdbname';";
+        	$resultrows = getResultArray ( $con, $sql );
+        	if (sizeof ( $resultrows ) > 0) {
+        		$sql="delete from freeappidtable where appid='$appid ';";
+            		displaysignuplog("SQL:".$sql);
+            		$result = execSQL ( $con, $sql );
+			$response['appid'] = $appid;
+            		$response['dbname'] = DBINFO::$APPDBNAME . $appid;
+			} else {
+				$sql = 'create database ' . $destdbname;
+            	$result = execSQL ( $con, $sql );
+            	$username = getDBUser ();
+            	$hostname = getDBHost ();
+            	$pwd = getDBPass ();
+            	$sql = "mysqldump -h $hostname -u $username -p$pwd  -P " . DBINFO::$PORT . " $sourcedbname | mysql -h $hostname -u $username -p$pwd -P" . DBINFO::$PORT . " $destdbname;";
+            	displaysignuplog("Dump Command:".$sql);
+            	exec ( $sql );
+            	$sql="delete from freeappidtable where appid='$appid ';";
+            	displaysignuplog("SQL:".$sql);
+            	$result = execSQL ( $con, $sql );
+				$response['appid']=$appid;
+            	$response['dbname']= DBINFO::$APPDBNAME . $appid;
+			}
         }else{
-            $response['error']='Product DB not exist,Please Configure';
+        	$response['error']='Product DB not exist,Please Configure';
         }
     }
     return $response;
