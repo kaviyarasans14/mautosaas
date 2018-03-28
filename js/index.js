@@ -13,11 +13,11 @@ function validateForm() {
         var password = document.forms['signup']['password'].value;               
         if (firstname == null || firstname == ''){
 		document.getElementById('error').style.display = "block";
-                document.getElementById('error').innerHTML = "Please Fill Your First Name!";
+                document.getElementById('error').innerHTML = "Please Fill Your First Name";
                 return false;
 	} else if (lastname == null || lastname == ''){
 		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Please Fill Your Last Name!";
+		document.getElementById('error').innerHTML = "Please Fill Your Last Name";
 	        return false;
         }else if (cname == null || cname == '') {
 		document.getElementById('error').style.display = "block";
@@ -34,17 +34,17 @@ function validateForm() {
 	if (password == null || password == '') {
 		document.getElementById("domain").style.borderColor = "#e66c3e";
 		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Please Fill Your Password!";
+		document.getElementById('error').innerHTML = "Please Fill Your Password";
 		return false;
 	} else if (password.toString().length < 6) {
 		document.getElementById("domain").style.borderColor = "#e66c3e";
 		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Please Fill Your Password Atleast 6 Character!";
+		document.getElementById('error').innerHTML = "Use 6 or more characters for your Password";
 		return false;
 	} 
 	if (mobileno == null || mobileno == '') {
 		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Please Fill Your Phone No!";
+		document.getElementById('error').innerHTML = "Please Fill Your Phone No";
 		return false;  
 	} else if (isNaN(mobileno)) {
 		document.getElementById('error').style.display = "block";
@@ -66,7 +66,7 @@ function validateEmail(emailid){
 	var isValidemail = true;
 	if (emailid == null || emailid == '') {
 		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Please Fill Your Email!";
+		document.getElementById('error').innerHTML = "Please Fill Your Email";
 		isValidemail=false;                  
 	}else if (!emailid.match(mailformat)) {
 		document.getElementById('error').style.display = "block";
@@ -120,14 +120,14 @@ function validateDomain(domain){
 	if (domain == null || domain == '') {
 		document.getElementById("domain").style.borderColor = "#e66c3e";                   
 		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Domain doesn't look right. Use the Valid one";
+		document.getElementById('error').innerHTML = "Please Fill Your Domain";
 		isValiddomain=false;                  
 	}
 	var format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
 	if(format.test(domain)){
 		document.getElementById("domain").style.borderColor = "#e66c3e";                   
 		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Domain doesn't look right. Use the Valid one";
+		document.getElementById('error').innerHTML = "Use Letters, Numbers only in Domain";
 		isValiddomain=false;
 	} 
 	if (isValiddomain) {
