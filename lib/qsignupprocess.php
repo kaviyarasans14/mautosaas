@@ -308,39 +308,68 @@ function createSaasDatabase($con) {
         $response['dbname']= DBINFO::$APPDBNAME . $appid;
     }else{
         createFreeAppIDS ($con);
-        $sql = "select min(appid) from freeappidtable where schemastatus == 'Created'";
-        $resultrow = getResultArray ( $con, $sql );
-        $appid = $resultrow [0] [0];
-        $sourcedbname = DBINFO::$APPDBNAME ."base";
-        $destdbname = DBINFO::$APPDBNAME . $appid;
-        $sql = "show databases like '$sourcedbname';";
-        $resultrows = getResultArray ( $con, $sql );
-        if (sizeof ( $resultrows ) > 0) {
-        	$sql = "show databases like '$destdbname';";
-        	$resultrows = getResultArray ( $con, $sql );
-        	if (sizeof ( $resultrows ) > 0) {
-        		$sql="delete from freeappidtable where appid='$appid ';";
-            		displaysignuplog("SQL:".$sql);
-            		$result = execSQL ( $con, $sql );
-			$response['appid'] = $appid;
-            		$response['dbname'] = DBINFO::$APPDBNAME . $appid;
-			} else {
-				$sql = 'create database ' . $destdbname;
-            	$result = execSQL ( $con, $sql );
-            	$username = getDBUser ();
-            	$hostname = getDBHost ();
-            	$pwd = getDBPass ();
-            	$sql = "mysqldump -h $hostname -u $username -p$pwd  -P " . DBINFO::$PORT . " $sourcedbname | mysql -h $hostname -u $username -p$pwd -P" . DBINFO::$PORT . " $destdbname;";
-            	displaysignuplog("Dump Command:".$sql);
-            	exec ( $sql );
-            	$sql="delete from freeappidtable where appid='$appid ';";
-            	displaysignuplog("SQL:".$sql);
-            	$result = execSQL ( $con, $sql );
-				$response['appid']=$appid;
-            	$response['dbname']= DBINFO::$APPDBNAME . $appid;
-			}
-        }else{
-        	$response['error']='Product DB not exist,Please Configure';
+        $sql = "select min(appid) from freeappidtable where schemastatus = 'Created'";
+        displaysignuplog("SELECT SQL:".$sql);
+	$resultrow = getResultArray ( $con, $sql );
+	displaysignuplog("SEIZE OF RESULT SQL:".$resultrow [0] [0]);
+	if(sizeof($resultrow) > 0 && $resultrow [0] [0] != null && $resultrow [0] [0] != "") {
+            $appid = $resultrow [0] [0];
+            $sourcedbname = DBINFO::$APPDBNAME . "base";
+            $destdbname = DBINFO::$APPDBNAME . $appid;
+            $sql = "show databases like '$sourcedbname';";
+            $resultrows = getResultArray($con, $sql);
+            if (sizeof($resultrows) > 0) {
+                $sql = "show databases like '$destdbname';";
+                $resultrows = getResultArray($con, $sql);
+                if (sizeof($resultrows) > 0) {
+                    $sql = "delete from freeappidtable where appid='$appid';";
+                    displaysignuplog("SQL:" . $sql);
+                    $result = execSQL($con, $sql);
+                    $response['appid'] = $appid;
+                    $response['dbname'] = DBINFO::$APPDBNAME . $appid;
+                } else {
+                    $sql = 'create database ' . $destdbname;
+                    $result = execSQL($con, $sql);
+                    $username = getDBUser();
+                    $hostname = getDBHost();
+                    $pwd = getDBPass();
+                    $sql = "mysqldump -h $hostname -u $username -p$pwd  -P " . DBINFO::$PORT . " $sourcedbname | mysql -h $hostname -u $username -p$pwd -P" . DBINFO::$PORT . " $destdbname;";
+                    displaysignuplog("Dump Command:" . $sql);
+                    exec($sql);
+                    $sql = "delete from freeappidtable where appid='$appid ';";
+                    displaysignuplog("SQL:" . $sql);
+                    $result = execSQL($con, $sql);
+                    $response['appid'] = $appid;
+                    $response['dbname'] = DBINFO::$APPDBNAME . $appid;
+                }
+            } else {
+                $response['error'] = 'Product DB not exist,Please Configure';
+            }
+        } else {
+            $sql = "select min(appid) from freeappidtable where schemastatus != 'Created'";
+            $resultrow = getResultArray ( $con, $sql );
+            $appid = $resultrow [0] [0];
+            $sourcedbname = DBINFO::$APPDBNAME . "base";
+            $destdbname = DBINFO::$APPDBNAME . $appid;
+            $sql = "show databases like '$sourcedbname';";
+            $resultrows = getResultArray($con, $sql);
+            if (sizeof($resultrows) > 0) {
+                $sql = 'create database ' . $destdbname;
+                $result = execSQL($con, $sql);
+                $username = getDBUser();
+                $hostname = getDBHost();
+                $pwd = getDBPass();
+                $sql = "mysqldump -h $hostname -u $username -p$pwd  -P " . DBINFO::$PORT . " $sourcedbname | mysql -h $hostname -u $username -p$pwd -P" . DBINFO::$PORT . " $destdbname;";
+                displaysignuplog("Dump Command:" . $sql);
+                exec($sql);
+                $sql = "delete from freeappidtable where appid='$appid ';";
+                displaysignuplog("SQL:" . $sql);
+                $result = execSQL($con, $sql);
+                $response['appid'] = $appid;
+                $response['dbname'] = DBINFO::$APPDBNAME . $appid;
+            } else {
+                $response['error'] = 'Product DB not exist,Please Configure';
+            }
         }
     }
     return $response;

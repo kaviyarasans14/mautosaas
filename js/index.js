@@ -10,8 +10,9 @@ function validateForm() {
         var emailid = document.forms['signup']['useremail'].value;
         var domain = document.forms['signup']['userdomain'].value;
         var mobileno = document.forms['signup']['mobilenum'].value;
-        var password = document.forms['signup']['password'].value;               
-        if (firstname == null || firstname == ''){
+        var password = document.forms['signup']['password'].value;
+        var conditions = document.forms['signup']['conditionagree'].checked; 
+	if (firstname == null || firstname == ''){
 		document.getElementById('error').style.display = "block";
                 document.getElementById('error').innerHTML = "Please Fill Your First Name";
                 return false;
@@ -23,6 +24,11 @@ function validateForm() {
 		document.getElementById('error').style.display = "block";
 		document.getElementById('error').innerHTML = "Please Fill Your Company Name";
 		return false;
+	}else if (!conditions){
+		document.getElementById('error').style.display = "block";
+		document.getElementById('error').innerHTML = "Please read and accept Antispam and Privacy Policy";
+		return false;
+	
 	}          
 				              
 	if (!validateEmail(emailid)) {                      

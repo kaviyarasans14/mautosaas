@@ -75,7 +75,13 @@ $cssfile = 'css/mobile.css';
   <input type="text" name="mobilenum" class="phone-form" required>
   <label class="form-placeholder">Phone No</label>
 <div class="error-wrapper"></div>
+
 </div>
+<label class="control control-checkbox">
+Agree With LeadsEngage AntiSpam & Privacy Policy
+<input type="checkbox" name="conditionagree" required/>
+<div class="control_indicator"></div>
+</label>
 <input type="submit" value="Sign up for free" name="signupbtn-fdesk-signupform" class="button button--solid button--block">
   <div class="copy_write-text align-center">
     <p style="text-align:center;"> Note: All the fields are mandatory</p>
