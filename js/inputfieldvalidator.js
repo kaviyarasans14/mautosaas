@@ -6411,7 +6411,7 @@
                             maxlength: "Domain name shouldn't exceed 25 characters"
                         }
                     })
-                }), n('.form-field input[name="domain-fdesk-signupform"]').each(function() {
+                }), n('.form-field input[name="userdomain"]').each(function() {
                     n(this).rules("add", {
                         fdeskDomainAvailable: !1,
                         subdomain: !0,

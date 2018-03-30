@@ -7,6 +7,14 @@
     font-style: normal
 }
 
+@font-face {
+    font-family: icomoon;
+    src: url(national-regular.ttf);
+    
+    font-weight: 400;
+    font-style: normal
+}
+
 [class*=' icon-'],
 [class^=icon-] {
     font-family: icomoon!important;
@@ -2412,11 +2420,12 @@ ol li {
     transition: background-color .15s ease-in;
     white-space: normal;
     background:linear-gradient(to bottom, #008AE6, #2D9AE4);
+    font-weight: bold;
 }
 
 .button--solid {
     color: #fff!important;
-    padding: 10px 30px;
+    padding: 14px 30px;
     font-size: .875rem;
     vertical-align: bottom;
     min-width: 160px
@@ -2436,7 +2445,7 @@ ol li {
 
 .form-wrapper{
 	margin-left:28%;
-	width: 40%;
+	width: 45%;
 }
 
 .form-wrapper h3 {
@@ -2567,7 +2576,7 @@ ol li {
 .form-field select,
 .form-field textarea {
     width: 100%;
-    padding: 20px 10px 20px 46px;
+    padding: 18px 10px 18px 46px;
     color: #4d4d4d;
     font-size: 1rem;
     font-family: National-Book, Helvetica, sans-serif;
@@ -2682,8 +2691,9 @@ ol li {
     color: #b3b3b3;
     pointer-events: none;
     transition: top .2s ease, font-size .2s ease;
-    font-size: 16px;
-    padding: 0 10px 10px 46px
+    font-family: National-Book,Helvetica,sans-serif;
+    font-size: 14px;
+    padding: 0 10px 10px 46px;
 }
 
 .copy_write-text p {
@@ -2800,4 +2810,18 @@ ol li {
 }
 .control-checkbox input:disabled ~ .control_indicator:after {
   border-color: #7b7b7b;
+}
+label{
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: National-Book,Helvetica,sans-serif;
+    font-size: 1rem;
+    line-height: 1.75;
+}
+.signup_Error{
+font-size:10px;
+color:red;
+margin-top: -20px;
+opacity: 0;
+transition:opacity .1s ease .1s;
 }

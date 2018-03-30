@@ -7,6 +7,14 @@
     font-style: normal
 }
 
+@font-face {
+    font-family: icomoon;
+    src: url(national-regular.ttf);
+    
+    font-weight: 400;
+    font-style: normal
+}
+
 [class*=' icon-'],
 [class^=icon-] {
     font-family: icomoon!important;
@@ -2807,4 +2815,16 @@ ol li {
 }
 .control-checkbox input:disabled ~ .control_indicator:after {
   border-color: #7b7b7b;
+}
+label{
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: National-Book,Helvetica,sans-serif;
+    font-size: 1rem;
+    line-height: 1.75;
+}
+.signup_Error{
+font-size:10px;
+color:red;
+margin-top: -20px;
 }

@@ -17,6 +17,8 @@ $cssfile = 'css/mobile.css';
 <html>
 <head>
 <link rel='stylesheet' type='text/css' href="<?php echo $cssfile;?>">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
 <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
 <link rel="icon" type="image/ico" href='images/favicon.ico' />
 <title>Signup | Leads Engage</title>
@@ -35,57 +37,57 @@ $cssfile = 'css/mobile.css';
 	<?php if (!isMobile()): ?>
         <i class="icon-user"></i>
 	<?php endif; ?>
-        <input type="text" name="firstname" class="name-first_name" id="name-first_name" required/>
-<label class="form-placeholder" id = "form-placeholder-first-name">First Name</label><div class="error-wrapper"></div>
+        <input type="text" name="firstname" class="name-first_name" id="name-first_name" required="true"/>
+<label class="form-placeholder" id = "form-placeholder-first-name">First Name*</label>
+
 </div>
+<p id="firstname-error-wrapper" style="display:none;" class="signup_Error"></p>
 </div>
+
 <div class="name-field">
   <div class="form-field">
-    <input type="text" name="lastname" class="name-last_name" required/>
-    <label class="form-placeholder">Last Name</label><div class="error-wrapper"></div>
+    <input type="text" name="lastname" class="name-last_name" required="true"/>
+    <label class="form-placeholder">Last Name*</label>
   </div>
+<p id="lastname-error-wrapper" style="display:none;" class="signup_Error"></p>
 </div>
 </div>
 
 <div class="form-field">
   <i class="icon-office"></i>
-  <input type="text" name="companyname" class="company-form" required/>
-  <label class="form-placeholder">Company</label><div class="error-wrapper"></div>
+  <input type="text" name="companyname" class="company-form" required="true"/>
+  <label class="form-placeholder">Company*</label>
 </div>
+
+<p id="companyname-error-wrapper" style="display:none;" class="signup_Error"></p>
+
 <div class="form-field">
-  <i class="icon-mail2"></i>
-  <input type="email" id="emailaddress" onfocusout="validateEmail(this.value)" name="useremail" class="email-form" required/>
-  <label class="form-placeholder">Email</label><div class="error-wrapper"></div>
+  <i class="icon-mail4"></i>
+  <input type="email" id="emailaddress" onfocusout="validateEmail(this.value)" name="useremail" class="email-form" required="true"/>
+  <label class="form-placeholder">Business Email*</label>
 </div>
+<p id="useremail-error-wrapper" style="display:none;" class="signup_Error"></p>
 <div class="form-field">
   <i class="icon-key"></i>
-  <input type="password" id="password" name="password" class="password-form" required/>
-  <label class="form-placeholder">Password</label>
-<div class="error-wrapper"></div>
+  <input type="password" id="password" name="password" class="password-form" required="true"/>
+  <label class="form-placeholder">Password (Minimum 6 Characters)*</label>
 </div>
+<p id="password-error-wrapper" style="display:none;" class="signup_Error"></p>
 <div class="form-field form-field-domain">
   <i class="icon-sphere"></i>
-  <input type="text" name="userdomain" onfocusout="checkDomainonKeyup(this.value)" class="helpdesk-form" id="domain" required>
+  <input type="text" name="userdomain" onfocusout="checkDomainonKeyup(this.value)" class="helpdesk-form" id="domain" required="true">
   <label class="form-leadsengage-text">.leadsengage.com</label>
-  <label class="form-placeholder">Domain</label>
-<div class="error-wrapper"></div>
+  <label class="form-placeholder">Domain*</label>
 </div>
+<p id="userdomain-error-wrapper" style="display:none;" class="signup_Error"></p>
 <div class="form-field">
   <i class="icon-phone"></i>
-  <input type="text" name="mobilenum" class="phone-form" required>
-  <label class="form-placeholder">Phone No</label>
-<div class="error-wrapper"></div>
-
+  <input type="text" name="mobilenum" class="phone-form" required="true">
+  <label class="form-placeholder">Phone No*</label>
 </div>
-<label class="control control-checkbox">
-Agree With LeadsEngage AntiSpam & Privacy Policy
-<input type="checkbox" name="conditionagree" required/>
-<div class="control_indicator"></div>
-</label>
+<p id="mobilenum-error-wrapper" style="display:none;" class="signup_Error"></p>
 <input type="submit" value="Sign up for free" name="signupbtn-fdesk-signupform" class="button button--solid button--block">
-  <div class="copy_write-text align-center">
-    <p style="text-align:center;"> Note: All the fields are mandatory</p>
-  </div>
+  
 </fieldset>
 
 </form>

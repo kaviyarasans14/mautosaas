@@ -1,86 +1,142 @@
 function clearerrormsg() {
-    	document.getElementById('error').innerHTML = '';         
-	document.getElementById('error').style.display = "none";   
+    	var firstnameerror = document.getElementById("firstname-error-wrapper");
+	firstnameerror.innerHTML = "";
+	firstnameerror.style.display = "none";
+	var lastnameerror = document.getElementById("lastname-error-wrapper");
+	lastnameerror.innerHTML = "";
+	lastnameerror.style.display = "none";
+	var cnameerror = document.getElementById("companyname-error-wrapper");
+	cnameerror.innerHTML = "";
+	cnameerror.style.display = "none";
+	var emailiderror = document.getElementById("useremail-error-wrapper");
+	emailiderror.innerHTML = "";
+	emailiderror.style.display = "none";
+	var mobilenoerror = document.getElementById("mobilenum-error-wrapper");
+	mobilenoerror.innerHTML = "";
+	mobilenoerror.style.display = "none";
+	var passworderror = document.getElementById("password-error-wrapper");
+	passworderror.innerHTML = "";
+	passworderror.style.display = "none";
+	var userdomainerror = document.getElementById("userdomain-error-wrapper");
+	userdomainerror.innerHTML = "";
+	userdomainerror.style.display = "none";
+	var firstnamewidget = document.forms['signup']['firstname'];
+	firstnamewidget.parentElement.className = "form-field";
+        var lastnamewidget = document.forms['signup']['lastname'];
+	lastnamewidget.parentElement.className = "form-field";
+        var cnamewidget = document.forms['signup']['companyname'];
+	cnamewidget.parentElement.className = "form-field";
+        var emailidwidget = document.forms['signup']['useremail'];
+        emailidwidget.parentElement.className = "form-field";
+        var domainwidget = document.forms['signup']['userdomain'];
+        domainwidget.parentElement.className = "form-field form-field-domain";
+        var mobilenowidget = document.forms['signup']['mobilenum'];
+        mobilenowidget.parentElement.className = "form-field";
+        var passwordwidget = document.forms['signup']['password'];
+	passwordwidget.parentElement.className = "form-field";
 }
 function validateForm() {
+	var isvalidform = true;
 	clearerrormsg();
-	var firstname = document.forms['signup']['firstname'].value;
-	var lastname = document.forms['signup']['lastname'].value;
-	var cname = document.forms['signup']['companyname'].value;
-        var emailid = document.forms['signup']['useremail'].value;
-        var domain = document.forms['signup']['userdomain'].value;
-        var mobileno = document.forms['signup']['mobilenum'].value;
-        var password = document.forms['signup']['password'].value;
-        var conditions = document.forms['signup']['conditionagree'].checked; 
-	if (firstname == null || firstname == ''){
-		document.getElementById('error').style.display = "block";
-                document.getElementById('error').innerHTML = "Please Fill Your First Name";
-                return false;
-	} else if (lastname == null || lastname == ''){
-		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Please Fill Your Last Name";
-	        return false;
-        }else if (cname == null || cname == '') {
-		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Please Fill Your Company Name";
-		return false;
-	}else if (!conditions){
-		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Please read and accept Antispam and Privacy Policy";
-		return false;
-	
+	var firstnamewidget = document.forms['signup']['firstname'];
+	var lastnamewidget = document.forms['signup']['lastname'];
+	var cnamewidget = document.forms['signup']['companyname'];
+        var emailidwidget = document.forms['signup']['useremail'];
+        var domainwidget = document.forms['signup']['userdomain'];
+        var mobilenowidget = document.forms['signup']['mobilenum'];
+        var passwordwidget = document.forms['signup']['password'];
+	var firstname = firstnamewidget.value;
+	var lastname = lastnamewidget.value;
+	var cname = cnamewidget.value;
+        var emailid = emailidwidget.value;
+        var domain = domainwidget.value;
+        var mobileno = mobilenowidget.value;
+        var password = passwordwidget.value;
+	var firstnameerror = document.getElementById("firstname-error-wrapper");
+	var lastnameerror = document.getElementById("lastname-error-wrapper");
+	var cnameerror = document.getElementById("companyname-error-wrapper");
+	var emailiderror = document.getElementById("useremail-error-wrapper");
+	var mobilenoerror = document.getElementById("mobilenum-error-wrapper");
+	var passworderror = document.getElementById("password-error-wrapper");
+	var userdomainerror = document.getElementById("userdomain-error-wrapper");
+        if (firstname == null || firstname == ''){
+		firstnameerror.style.display = "block";
+		firstnameerror.innerHTML = "Please Fill Your First Name";
+		firstnamewidget.parentElement.className += " error";
+		isvalidform = false;
+	} 
+        if (lastname == null || lastname == ''){
+		lastnameerror.style.display = "block";
+		lastnameerror.innerHTML = "Please Fill Your Last Name";
+		lastnamewidget.parentElement.className += " error";
+		isvalidform = false;
+	} 
+
+	if (cname == null || cname == '') {
+		cnameerror.style.display = "block";
+		cnameerror.innerHTML = "Please Fill Your Company Name";
+		cnamewidget.parentElement.className += " error";
+		isvalidform = false;
 	}          
 				              
-	if (!validateEmail(emailid)) {                      
-		return false;  
+	if (!validateEmail(emailid)) {   
+		isvalidform = false;                   
 	}
-	if (!validateDomain(domain)) {                      
-		return false;  
+	if (!validateDomain(domain)) {             
+		isvalidform = false;         
 	}
 	if (password == null || password == '') {
-		document.getElementById("domain").style.borderColor = "#e66c3e";
-		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Please Fill Your Password";
-		return false;
+		passworderror.style.display = "block";
+		passworderror.innerHTML = "Please Fill Your Password";
+		passwordwidget.parentElement.className += " error";
+		isvalidform = false;
 	} else if (password.toString().length < 6) {
-		document.getElementById("domain").style.borderColor = "#e66c3e";
-		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Use 6 or more characters for your Password";
+		passworderror.style.display = "block";
+		passworderror.innerHTML = "Use 6 or more characters for your Password";
+		passwordwidget.parentElement.className += " error";
 		return false;
 	} 
 	if (mobileno == null || mobileno == '') {
-		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Please Fill Your Phone No";
-		return false;  
+		mobilenoerror.style.display = "block";
+		mobilenoerror.innerHTML = "Please Fill Your Phone No";
+		mobilenowidget.parentElement.className += " error";
+		isvalidform = false;
 	} else if (isNaN(mobileno)) {
-		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Phone No doesn't look right. Use the Valid one";
-                    
+		mobilenoerror.style.display = "block";
+		mobilenoerror.innerHTML = "Phone No doesn't look right. Use the Valid one";
+		mobilenowidget.parentElement.className += " error";
+		    
 		return false; 
 	}
              
-        return true;
+        return isvalidform;
 }
 
 function validateEmail(emailid){  
-	document.getElementById('error').style.display = "none";
-	document.getElementById('error').innerHTML = ""; 
+	var emailidwidget = document.forms['signup']['useremail'];
+	var emailiderror = document.getElementById("useremail-error-wrapper");
+	emailiderror.style.display = "none";
+	emailiderror.innerHTML = "";
+	emailidwidget.parentElement.className = "form-field";
 	var othersignup = 'Please signup with your business E-Mail (or) <a target="_parent" style="color:white;font-family: helvetica,arial;text-decoration: none;" href="http://www.cratiocrmsoftware.com/othersignup/"> <br><u style="color: rgb(204, 255, 0);font-size: 13px;">Click here</u></a> to contact our sales team.';
 	var invalidemailsids = ["gmail", "yahoo", "hotmail", "live", "outlook", "rediffmail", "mail", "yandex","sify"];
 	var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 	var reg = /^([\w-\.]+@(?!gmail.com)(?!yahoo.com)(?!hotmail.com)(?!yahoo.co.in)(?!aol.com)(?!abc.com)(?!xyz.com)(?!pqr.com)(?!rediffmail.com)(?!live.com)(?!outlook.com)(?!me.com)(?!msn.com)(?!ymail.com)([\w-]+\.)+[\w-]{2,4})?$/;
 	var isValidemail = true;
 	if (emailid == null || emailid == '') {
-		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Please Fill Your Email";
+		emailiderror.style.display = "block";
+		emailiderror.innerHTML = "Please Fill Your Email";
+		emailidwidget.parentElement.className += " error";
 		isValidemail=false;                  
 	}else if (!emailid.match(mailformat)) {
-		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Email doesn't look right. Use the Valid one";
+		emailiderror.style.display = "block";
+		emailiderror.innerHTML = "Email doesn't look right. Use the Valid one";
+		emailidwidget.parentElement.className += " error";
 		isValidemail=false;                  
 	} else if (!reg.test(emailid)){
-		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "We don't allow direct signup without business mailid. Please email support@leadsengage.com for Free Trial.";
+		emailiderror.style.display = "block";
+		emailiderror.innerHTML = "Please fill your business email";
+		emailidwidget.parentElement.className += " error";
 		isValidemail=false;           
 	}	
 	if(isValidemail){
@@ -107,8 +163,11 @@ function checkEmail(email){
 			if (xmlhttp.readyState == 4 && xmlhttp.status == 200){
 				var response = xmlhttp.responseText;                               
 				if (response.toString().indexOf("emailexist") != -1) {
-					document.getElementById('error').style.display = "block";
-					document.getElementById('error').innerHTML = email+" already registered with us";
+					var emailidwidget = document.forms['signup']['useremail'];
+					var emailiderror = document.getElementById("useremail-error-wrapper");
+					emailiderror.style.display = "block";
+					emailiderror.innerHTML = email+" already registered with us";
+					emailidwidget.parentElement.className = " error";
 					isValidemail=false;      
 				} 
 			}
@@ -120,20 +179,22 @@ function checkEmail(email){
 }
 
 function validateDomain(domain){
+	var domainwidget = document.forms['signup']['userdomain'];
+	var userdomainerror = document.getElementById("userdomain-error-wrapper");
 	document.getElementById('error').style.display = "none";
 	document.getElementById('error').innerHTML = "";
 	var isValiddomain = true;
 	if (domain == null || domain == '') {
-		document.getElementById("domain").style.borderColor = "#e66c3e";                   
-		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Please Fill Your Domain";
+		userdomainerror.style.display = "block";
+		userdomainerror.innerHTML = "Please Fill Your Domain";
+		domainwidget.parentElement.className += " error";
 		isValiddomain=false;                  
 	}
 	var format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
 	if(format.test(domain)){
-		document.getElementById("domain").style.borderColor = "#e66c3e";                   
-		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Use Letters, Numbers only in Domain";
+		userdomainerror.style.display = "block";
+		userdomainerror.innerHTML = "Use Letters, Numbers only in Domain";
+		domainwidget.parentElement.className += " error";
 		isValiddomain=false;
 	} 
 	if (isValiddomain) {
@@ -147,9 +208,9 @@ function validateDomain(domain){
 			if (xmlhttp.readyState == 4 && xmlhttp.status == 200){
 				var response = xmlhttp.responseText;                               
 				if (response.toString().indexOf("domainexist") != -1) {
-					document.getElementById("domain").style.borderColor = "#e66c3e";
-					document.getElementById('error').style.display = "block";
-					document.getElementById('error').innerHTML = domain+" not available. Try another";
+					userdomainerror.style.display = "block";
+					userdomainerror.innerHTML = domain+" not available. Try another";
+					domainwidget.parentElement.className += " error";
 					isValiddomain=false;      
 				} 
 			}

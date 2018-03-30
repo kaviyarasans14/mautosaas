@@ -153,11 +153,11 @@ try{
             createMauticFirstUser($con,$dbname,$frommail,$firstname,$lastname,$pwd);
             commitTransaction($con);
             $url="http://$domain.".MAUTIC_DOMAIN."/index.php";
-		if(!isset($_REQUEST['signupmode'])){
-            die("success=".$url);
-		} else {
+		//if(!isset($_REQUEST['signupmode'])){
+            //die("success=".$url);
+		//} else {
             header ( 'Location:' . $url );
-		}
+		//}
         }else if(isset($response['error'])){
             $url ='thank-you.php?message=' .$response['error'];
             header ( 'Location:' . $url );
