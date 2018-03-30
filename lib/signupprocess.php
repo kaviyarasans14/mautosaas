@@ -30,7 +30,7 @@ if ($pdoconn) {
 $idhash = insertInLeadsengage($firstname,$lastname,$companyname,$frommail, $pwd,$usermobile, $domain, $con);
 $content = sendSignupVerifyMail($firstname,$lastname,$frommail,$idhash,$con);
 $subject = "Leadsengage - Activation email";
-file_put_contents("/var/www/log.txt",$content."\n",FILE_APPEND);
+//file_put_contents("/var/www/log.txt",$content."\n",FILE_APPEND);
 $emailids = array();
 $emailids[]=$frommail;
 $reason = smtpmail ( $emailids, $subject, $content, "", [], false, "", "" );
