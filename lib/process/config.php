@@ -20,6 +20,8 @@ class DBINFO {
 	public static $DEFAULT_EMAILID = '1';
 	public static $SIGNUP_URL = "http://dacam.localhost/mauto/index.php";
 	public static $ACTIONVATION_LINK = "http://localhost/mautosaas/lib/activation.php";
+	public static $LEAD_STATUS = "Signup";
+	public static $LEAD_STAGE = "Trial";
 
 }
 

@@ -2419,7 +2419,7 @@ ol li {
     display: inline-block;
     transition: background-color .15s ease-in;
     white-space: normal;
-    background:linear-gradient(to bottom, #008AE6, #2D9AE4);
+    background:linear-gradient(to bottom, #ff9900, #ff9900);
     font-weight: bold;
 }
 
@@ -2822,6 +2822,5 @@ label{
 font-size:10px;
 color:red;
 margin-top: -20px;
-opacity: 0;
 transition:opacity .1s ease .1s;
 }

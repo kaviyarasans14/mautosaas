@@ -45,9 +45,11 @@ function insertInLeadsengage($firstname,$lastname,$companyname,$frommail, $pwd,$
 	$userid = DBINFO::$DEFAULT_CREATEDBY_ID;
 	$username = DBINFO::$DEFAULT_CREATEDBY_NAME;
 	$email_ID = DBINFO::$DEFAULT_EMAILID;
+    $leadstage = DBINFO::$LEAD_STAGE;
+    $leadstatus = DBINFO::$LEAD_STATUS;
 	date_default_timezone_set('UTC');
 	$dateidentified = date('Y-m-d H:i:s');
-	$isql = "insert into $leadtable (firstname,lastname,company_new,email,mobile,domain,password,created_by,created_by_user,is_published,owner_id,date_identified,date_added) values ('$firstname','$lastname','$companyname','$frommail','$usermobile','$domain','$pwd','$userid','$username',1,'$userid','$dateidentified','$dateidentified')";
+	$isql = "insert into $leadtable (firstname,lastname,company_new,email,mobile,domain,password,created_by,created_by_user,is_published,owner_id,date_identified,date_added,lead_status,lead_stage) values ('$firstname','$lastname','$companyname','$frommail','$usermobile','$domain','$pwd','$userid','$username',1,'$userid','$dateidentified','$dateidentified','$leadstatus','$leadstage')";
 	execSQL($con, $isql);
 	$asql = "select id from $leadtable where email = '$frommail'";
 	$autoidarr = getResultArray($con, $asql);

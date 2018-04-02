@@ -146,10 +146,14 @@ function validateEmail(emailid){
 }
 
 function checkEmail(email){
+	var emailidwidget = document.forms['signup']['useremail'];
+	var emailiderror = document.getElementById("useremail-error-wrapper");
+	emailiderror.style.display = "none";
+	emailiderror.innerHTML = "";
 	var isValidemail = true;
-	if (domain == null || domain == '') {
-		document.getElementById('error').style.display = "block";
-		document.getElementById('error').innerHTML = "Please fill valid Email!";  
+	if (email == null || email == '') {
+		emailiderror.style.display = "block";
+		emailiderror.innerHTML = "Please fill valid Email";
 		isValidemail=false;                  
 	}
 	if (isValidemail) {
@@ -181,8 +185,9 @@ function checkEmail(email){
 function validateDomain(domain){
 	var domainwidget = document.forms['signup']['userdomain'];
 	var userdomainerror = document.getElementById("userdomain-error-wrapper");
-	document.getElementById('error').style.display = "none";
-	document.getElementById('error').innerHTML = "";
+	userdomainerror.style.display = "none";
+	userdomainerror.innerHTML = "";
+	domainwidget.parentElement.className = "form-field form-field-domain";
 	var isValiddomain = true;
 	if (domain == null || domain == '') {
 		userdomainerror.style.display = "block";

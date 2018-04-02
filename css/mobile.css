@@ -2419,7 +2419,7 @@ ol li {
     display: inline-block;
     transition: background-color .15s ease-in;
     white-space: normal;
-    background:linear-gradient(to bottom, #008AE6, #2D9AE4);
+    background:linear-gradient(to bottom, #ff9900, #ff9900);
 }
 
 .button--solid {
