@@ -171,7 +171,7 @@ function checkEmail(email){
 					var emailiderror = document.getElementById("useremail-error-wrapper");
 					emailiderror.style.display = "block";
 					emailiderror.innerHTML = email+" already registered with us";
-					emailidwidget.parentElement.className = " error";
+					emailidwidget.parentElement.className += " error";
 					isValidemail=false;      
 				} 
 			}

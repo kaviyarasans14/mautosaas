@@ -124,9 +124,9 @@ try{
             $result = execSQL ( $con, $sql );
             updateLicenseInfo($con, $appid,$dbname);
             displaysignuplog("DB Name:".$dbname);
-            $elasticuser="";
-            $elasticpwd="";
-            if(strpos(MAUTIC_DOMAIN, "leadsengage.com") !== false || strpos(MAUTIC_DOMAIN, "cratio.in") !== false){
+            $elasticuser="qc@leadsengage.net";
+            $elasticpwd="986d3ea1-db10-4795-9add-cc9301792dfb";
+            if(strpos(MAUTIC_DOMAIN, "leadsengage.com") !== false){
                 $status=createSubAccount(
                     "$domain@leadsengage.net","LeadsEngage@44#");
                 if($status[1] == ""){
