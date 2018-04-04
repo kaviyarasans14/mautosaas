@@ -94,7 +94,7 @@ function validateForm() {
 		passworderror.style.display = "block";
 		passworderror.innerHTML = "Use 6 or more characters for your Password";
 		passwordwidget.parentElement.className += " error";
-		return false;
+		isvalidform = false;
 	} 
 	if (mobileno == null || mobileno == '') {
 		mobilenoerror.style.display = "block";
@@ -106,7 +106,7 @@ function validateForm() {
 		mobilenoerror.innerHTML = "Phone No doesn't look right. Use the Valid one";
 		mobilenowidget.parentElement.className += " error";
 		    
-		return false; 
+		isvalidform = false;
 	}
              
         return isvalidform;
