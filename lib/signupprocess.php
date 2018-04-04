@@ -28,8 +28,8 @@ if ($pdoconn) {
 }
 
 $idhash = insertInLeadsengage($firstname,$lastname,$companyname,$frommail, $pwd,$usermobile, $domain, $con);
-$content = sendSignupVerifyMail($firstname,$lastname,$frommail,$idhash,$con);
-$subject = "Leadsengage - Activation email";
+$content = sendSignupVerifyMail($firstname,$lastname,$frommail,$idhash,$con,$pwd);
+$subject = "Activate your LeadsEngage Account Now";
 //file_put_contents("/var/www/log.txt",$content."\n",FILE_APPEND);
 $emailids = array();
 $emailids[]=$frommail;
@@ -72,7 +72,7 @@ function encodeArrayForUrl($array)
 {
 	return urlencode(base64_encode(serialize($array)));
 }
-function sendSignupVerifyMail($firstname,$lastname,$email,$idhash,$con){
+function sendSignupVerifyMail($firstname,$lastname,$email,$idhash,$con,$password){
 	$email_ID = DBINFO::$DEFAULT_EMAILID;
 	$leadtable = DBINFO::$SIGNUP_DBNAME.".leads";
 	$asql = "select id from $leadtable where email = '$email'";
@@ -95,37 +95,64 @@ function sendSignupVerifyMail($firstname,$lastname,$email,$idhash,$con){
 	}
 	$redirecturl = $signupurl."/r/".$redirectid."?ct=".$ct."&utm_source=leadsengage&utm_medium=email&utm_campaign=Activation+Email&utm_content=Activation+Email&email=".$email;
 	$url = $signupurl."/email/".$idhash.".gif";
-	$temp = "<html>
+	$temp = "<!DOCTYPE html>
+<html>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+
 	<head>
 		<title></title>
+		<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css'>
+		<style>
+		.butle{
+		text-align:center;text-decoration:none;font-family: Montserrat,sans-serif;transition: all .1s ease;color: #fff;font-weight: 400;font-size: 18px;margin-top: 10px;font-family: Montserrat,sans-serif;display: inline-block;letter-spacing: .6px;padding: 15px 30px;box-shadow: 0 1px 2px rgba(0,0,0,.36);white-space: nowrap;border-radius: 35px;background-color: #0071ff;border: #0071ff;
+		}
+		.marle{
+		margin: 0% 11.5%;background-color:#fff;padding: 50px 50px 50px 50px;border-bottom:5px solid #0071ff;
+		}
+		@media only screen and (min-width: 200px)and (max-width: 767px){
+.marle {
+    margin: 0px 5px; background-color: #fff; padding: 5px 0px; border-bottom: 5px solid #0071ff;
+}
+		.butle{
+		padding: 15px 20px;
+		}
+}
+		</style>
 	</head>
-	<body>
-		<div style='padding-top:100px;'>
+	<body aria-disabled='false' style='min-height: 300px;margin:0px;'>
+		<div style='background-color:#eff2f7'>
+			<div style='padding-top: 55px;'>
+				<div class='marle'>
+					<p style='text-align:center;'><img height='1' width='1' src=\"$url\"></p>
+				
+					<p style='text-align:center;'><img src='https://s3.amazonaws.com/leadsroll.com/home/leadsengage_logo-black.png' class='fr-fic fr-dii' height='40'></p>
+					<br>
+					<div style='text-align:center;width:100%;'>
+						<div style='display:inline-block;width: 80%;'>
 
-	<p style='text-align:center;'><img height='1' width='1' src=\"$url\"><img src='https://s3.amazonaws.com/leadsroll.com/home/leadsengage_logo-black.png' class='fr-fic fr-dii' height='40'></p>
-	<br>
-	<div style='text-align:center;width:100%;'>
-		<div style='display:inline-block;width: 60%;'>
+							<p style='text-align:left;font-size:14px;font-family: Montserrat,sans-serif;'>Hi $firstname $lastname</p>
 
-			<p style='text-align:left;font-size:14px;font-family: Montserrat,sans-serif;'>Hi $firstname $lastname</p>
+							<p style='text-align:left;font-size:14px;line-height: 30px;font-family: Montserrat,sans-serif;'>Thanks for signing up! We're thrilled to have you on-board.
+								<br>Please click following link to verify your email and Login in to your account.</p><a href=\"$redirecturl\" class='butle'>Login to Your Account</a>
+							<br>
 
-			<p style='text-align:left;font-size:14px;font-family: Montserrat,sans-serif;'>Good to have you on <a href='http://leadsengage.com'>Leadsengage</a>. Please click following link to verify your email</p><a href=\"$redirecturl\" style='text-align:center;text-decoration:none;font-family: Montserrat,sans-serif;transition: all .1s ease;color: #fff;font-weight: 400;font-size: 18px;margin-top: 10px;font-family: Montserrat,sans-serif;display: inline-block;letter-spacing: .6px;padding: 15px 30px;box-shadow: 0 1px 2px rgba(0,0,0,.36);white-space: nowrap;background-color: #f90;    border: 1px solid #f90;'>Verify Email</a>
-			<br>
-			<br>
+							<p style='text-align:left;font-size:14px;line-height: 30px;font-family: Montserrat,sans-serif;'>We're always around to help you set up and make the best use of the product. If you have any questions, just reply to this email, and we'll be on it.</p>
+<p style='text-align:left;font-size:14px;line-height: 30px;font-family: Montserrat,sans-serif;'>Here are your login details</p>
+<p style='text-align:left;font-size:14px;line-height: 15px;font-family: Montserrat,sans-serif;'><b>Login ID : $email</b></p>
+<p style='text-align:left;font-size:14px;line-height: 15px;font-family: Montserrat,sans-serif;'><b>Password : $password</b></p>
+							<br>
 
-			<p style='text-align:left;font-size:14px;font-family: Montserrat,sans-serif;'>Best,
-				<br>Team Leadsengage</p>
+							<p style='text-align:left;font-size:14px;font-family: Montserrat,sans-serif;'>Cheers!
+								<br>Team LeadsEngage.</p>
+						</div>
+					</div>
+				</div>
+				<br>
+				<br>
+				<br>
+			</div>
 		</div>
-	</div>
-	<br>
-	<br>
-	<br>
-
-</div>
-<div style='text-align:center;margin-top:30px;background-color:#ffffff;border-top:1px solid #d0d0d0;font-family: 'GT-Walsheim-Regular', 'Poppins-Regular', Helvetica, Arial, sans-serif;
-            font-weight: normal;font-size:14px;'><span style='display:block;padding-top:20px;'>To make sure you keep getting these emails, please add <Sender Mail ID> to your address book or whitelist us.<br>
-Powered by <a href='www.leadsengage.com'>LeadsEngage</a>.
-</div>
+		
 <div>
 <span style='display:none;'>
 {unsubscribe}
@@ -134,6 +161,7 @@ Powered by <a href='www.leadsengage.com'>LeadsEngage</a>.
 {accountaddress}
 </span>
 </div>
+
 	</body>
 </html>
 ";
