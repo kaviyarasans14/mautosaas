@@ -244,8 +244,8 @@ function updateLicenseInfo($con, $appid, $dbname){
     $currentdatetime=date('Y-m-d H:i:s');
     $currentdate=date('Y-m-d');
 	$emailValidityDays = DBINFO::$EMAIL_VALIDITY;
-	$emailValid= "+".$emailValidityDays."days";
-	$emailvalidity = date('Y-m-d', strtotime($currentdate.$emailValid));
+	$days= "+".$emailValidityDays." days";
+	$emailvalidity = date('Y-m-d', strtotime($currentdate.$days));
     $enddate = "";
     $editionindex = DBINFO::$DEFAULT_EDITIONINDEX;
     $licensehistorytable=DBINFO::$APPDBNAME.".licensehistory";
@@ -288,7 +288,7 @@ function updateLicenseInfo($con, $appid, $dbname){
             if($featurevalue != "UL"){
                 $daysval = "+".$featurevalue." days";
                 $enddate = date("Y-m-d",strtotime(date("Y-m-d", strtotime($currentdate)) . " $daysval"));
-                $sql = "update $licenseinfotable set email_validity = '$enddate'";
+                $sql = "update $licenseinfotable set email_validity = '$emailvalidity'";
                 $result = execSQL ( $con, $sql );
             }
             $sql = "update $licenseinfotable set licensed_days = '$featurevalue', license_start_date  ='$currentdate',license_end_date ='$enddate';";
@@ -300,7 +300,7 @@ function updateLicenseInfo($con, $appid, $dbname){
     $isql = "insert into $licensehistorytable  values('$nextid','$appid','$currentdate','$enddate','$editionindex','$featureindex','Edition','','','','','');";
 	displaysignuplog("License History SQL:".$isql);
     $result = execSQL ( $con, $isql );
-	
+
         $isql = "insert into customfeaturetable values ('$appid','$featureindex','$featurevalue','$currentdatetime')";
         displaysignuplog("Insert Custom SQL:".$isql);
         $result = execSQL ( $con, $isql );
