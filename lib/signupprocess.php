@@ -49,8 +49,16 @@ function insertInLeadsengage($firstname,$lastname,$companyname,$frommail, $pwd,$
     $leadstatus = DBINFO::$LEAD_STATUS;
 	date_default_timezone_set('UTC');
 	$dateidentified = date('Y-m-d H:i:s');
-	$isql = "insert into $leadtable (firstname,lastname,company_new,email,mobile,domain,password,created_by,created_by_user,is_published,owner_id,date_identified,date_added,lead_status,lead_stage) values ('$firstname','$lastname','$companyname','$frommail','$usermobile','$domain','$pwd','$userid','$username',1,'$userid','$dateidentified','$dateidentified','$leadstatus','$leadstage')";
-	execSQL($con, $isql);
+	$sql="select email,domain from $leadtable where email='$frommail' and domain='';";
+	$dbrow = getResultArray ( $con, $sql );
+	if(sizeof($dbrow) > 0){
+	   $sql = "update $leadtable set firstname='$firstname',lastname='$lastname',company_new='$companyname',email='$frommail',mobile='$usermobile',domain='$domain',password='$pwd',created_by='$userid',created_by_user='$username',is_published='1',owner_id='$userid',date_identified='$dateidentified',date_added='$dateidentified',lead_status='$leadstatus',lead_stage='$leadstage' where email='$frommail'";
+	   execSQL($con, $sql);	
+	} else {
+	  $isql = "insert into $leadtable (firstname,lastname,company_new,email,mobile,domain,password,created_by,created_by_user,is_published,owner_id,date_identified,date_added,lead_status,lead_stage) values ('$firstname','$lastname','$companyname','$frommail','$usermobile','$domain','$pwd','$userid','$username',1,'$userid','$dateidentified','$dateidentified','$leadstatus','$leadstage')";
+	   execSQL($con, $isql);	
+	}
+	
 	$asql = "select id from $leadtable where email = '$frommail'";
 	$autoidarr = getResultArray($con, $asql);
 	$autoid = $autoidarr[0][0];
@@ -59,8 +67,15 @@ function insertInLeadsengage($firstname,$lastname,$companyname,$frommail, $pwd,$
 	$segarr = getResultArray($con, $segsql);
 	if (sizeof($segarr) > 0) {
 		$segmentid = $segarr[0][0];
-		$isegment = "insert into $segmenttable values (" . $segmentid . "," . $autoid . ",'" . $dateidentified . "',0,1)";
-		execSQL($con, $isegment);
+		$leadid = $segarr[0][1];
+		if($leadid == $autoid){
+			$isegment = "update $segmenttable set leadlist_id='$segmentid',lead_id='$autoid',date_added='$dateidentified',manually_removed='0',manually_added='1'";
+		    execSQL($con, $isegment);
+		} else {
+			$isegment = "insert into $segmenttable values (" . $segmentid . "," . $autoid . ",'" . $dateidentified . "',0,1)";
+		    execSQL($con, $isegment);
+		}
+		
 	}	
 	$idhash = uniqid();
 	$isql = "insert into $stattable (lead_id,email_id,email_address,is_read,is_failed,tracking_hash,is_unsubscribe,is_bounce,date_sent) values ('$autoid','$email_ID','$frommail',0,0,'$idhash',0,0,'$dateidentified')";

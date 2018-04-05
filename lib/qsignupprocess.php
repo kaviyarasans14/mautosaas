@@ -76,7 +76,8 @@ try{
        		$frommail=$_REQUEST['email'];
 	        $userdetails = getUserDetails($con,$frommail);
         	if(sizeof($userdetails) == 0){
-        	    header('Location:www.leadsengage.com');
+        	   $url = "https://leadsengage.com/activation-expired";
+        	   die("url=".$url);
         	}
 	        $firstname = $userdetails[0][0];
         	$lastname = $userdetails[0][1];
@@ -170,6 +171,63 @@ try{
     $msg = $ex->getMessage ();
     displaysignuplog("Exception Occur:".$msg);
 }
+
+
+function checkDomainAvailability($con,$domain){
+    $sql="select appid from applicationlist where f5='$domain';";
+    displaysignuplog("SQL:".$sql);
+    $dbrow = getResultArray ( $con, $sql );
+	$domainexist = true;
+    if(sizeof($dbrow) != 0){
+        return $domainexist = false;
+    } else {
+        return checkDomainAvail($con,$domain);
+    }
+}
+
+function checkEmailAvailability($con,$email){
+    $sql="select appid from applicationlist where f4='$email';";
+    $dbrow = getResultArray ( $con, $sql );
+    $emailexist = true;
+    if(sizeof($dbrow) != 0){
+        return $emailexist = false;
+    } else {
+        return checkEmailAvail($con,$email);
+    }
+
+}
+
+function checkEmailAvail($con,$email) {
+    $leadtable = DBINFO::$SIGNUP_DBNAME.".leads";
+    $sql="select email,domain from $leadtable where email='$email';";
+    $dbrow = getResultArray ( $con, $sql );
+	$email=$_REQUEST['checkemailavailability'];
+	$domain = $dbrow[0][1];
+    if($email == $dbrow[0][0] && $domain == "") {
+    	return true;
+    }
+    $emailexist = true;
+    if(sizeof($dbrow) != 0){
+        return $emailexist = false;
+    } else {
+        return true;
+    }
+
+}
+
+function checkDomainAvail($con,$domain){
+    $leadtable = DBINFO::$SIGNUP_DBNAME.".leads";
+    $sql="select domain from $leadtable where domain='$domain';";
+    $dbrow = getResultArray ( $con, $sql );
+    $emailexist = true;
+    if(sizeof($dbrow) != 0){
+        return $emailexist = false;
+    } else {
+        return true;
+    }
+
+}
+
 function createMauticFirstUser($con,$dbname,$frommail,$firstname,$lastname,$pwd){
     $pwd=getEncodedPwd($pwd);
     $sql="insert into ".$dbname.".users(role_id,is_published,username,password,first_name,last_name,email,online_status,signature,timezone,locale) values('2','1','$frommail','$pwd','$firstname','$lastname','$frommail','offline','Best regards, |FROM_NAME|','Asia/Kolkata','en_US')";
@@ -184,37 +242,6 @@ function getEncodedPwd($pwd){
     $pwd=password_hash($pwd, PASSWORD_BCRYPT, $options);
     return $pwd;
 }
-function checkDomainAvailability($con,$domain){
-    $sql="select appid from applicationlist where f5='$domain';";
-    displaysignuplog("SQL:".$sql);
-    $dbrow = getResultArray ( $con, $sql );
-    return sizeof($dbrow) == 0;
-}
-function checkEmailAvailability($con,$email){
-    $sql="select appid from applicationlist where f4='$email';";
-    $dbrow = getResultArray ( $con, $sql );
-    $emailexist = true;
-    if(sizeof($dbrow) != 0){
-        return $emailexist = false;
-    } else {
-        return checkEmailAvail($con,$email);
-    }
-
-}
-
-function checkEmailAvail($con,$email){
-    $leadtable = DBINFO::$SIGNUP_DBNAME.".leads";
-    $sql="select email from $leadtable where email='$email';";
-    $dbrow = getResultArray ( $con, $sql );
-    $emailexist = true;
-    if(sizeof($dbrow) != 0){
-        return $emailexist = false;
-    } else {
-        return true;
-    }
-
-}
-
 function getUserDetails($con,$email){
     $leadtable = DBINFO::$SIGNUP_DBNAME.".leads";
     $sql="select firstname,lastname,company_new,password,domain,mobile from $leadtable where email='$email';";
@@ -244,8 +271,8 @@ function updateLicenseInfo($con, $appid, $dbname){
     $currentdatetime=date('Y-m-d H:i:s');
     $currentdate=date('Y-m-d');
 	$emailValidityDays = DBINFO::$EMAIL_VALIDITY;
-	$days= "+".$emailValidityDays." days";
-	$emailvalidity = date('Y-m-d', strtotime($currentdate.$days));
+	$emailValid= "+".$emailValidityDays."days";
+	$emailvalidity = date('Y-m-d', strtotime($currentdate.$emailValid));
     $enddate = "";
     $editionindex = DBINFO::$DEFAULT_EDITIONINDEX;
     $licensehistorytable=DBINFO::$APPDBNAME.".licensehistory";
