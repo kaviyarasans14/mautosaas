@@ -22,6 +22,7 @@ class DBINFO {
 	public static $ACTIONVATION_LINK = "http://localhost/mautosaas/lib/activation.php";
 	public static $LEAD_STATUS = "Signup";
 	public static $LEAD_STAGE = "Trial";
+	public static $EMAIL_VALIDITY="7";
 
 }
 

@@ -116,10 +116,11 @@ try{
             $ssql = "select version from $migrationtable  order by version desc limit 1";
             $dbrow = getResultArray ( $con, $ssql );
             $version = "0";
+			$currentdatetime = date ( 'Y-m-d H:i:s' );
             if(sizeof($dbrow) > 0){
                 $version = $dbrow[0][0];
             }
-            $sql="insert into applicationlist(appid,f5,f2,f3,f4,f11,f17,f18,f19,f20,f21,f26,f27,f28,f6) values('$appid','$domain','$companyname','$fromname','$frommail','$usermobile','1','1','1','1','1','0','0','0','$version');";
+            $sql="insert into applicationlist(appid,f5,f2,f3,f4,f11,f17,f18,f19,f20,f21,f26,f27,f28,f6,createdtimeat) values('$appid','$domain','$companyname','$fromname','$frommail','$usermobile','1','1','1','1','1','0','0','0','$version','$currentdatetime');";
             displaysignuplog("SQL:".$sql);
             $result = execSQL ( $con, $sql );
             updateLicenseInfo($con, $appid,$dbname);
@@ -242,8 +243,12 @@ function createFreeAppIDS($con){
 function updateLicenseInfo($con, $appid, $dbname){
     $currentdatetime=date('Y-m-d H:i:s');
     $currentdate=date('Y-m-d');
+	$emailValidityDays = DBINFO::$EMAIL_VALIDITY;
+	$emailValid= "+".$emailValidityDays."days";
+	$emailvalidity = date('Y-m-d', strtotime($currentdate.$emailValid));
     $enddate = "";
     $editionindex = DBINFO::$DEFAULT_EDITIONINDEX;
+    $licensehistorytable=DBINFO::$APPDBNAME.".licensehistory";
     $licenseinfotable = $dbname.".licenseinfo";
     $sql = "select featureset from editiontable where editionindex = '$editionindex'";
     displaysignuplog("Edition SQL:".$sql);
@@ -256,8 +261,8 @@ function updateLicenseInfo($con, $appid, $dbname){
     displaysignuplog("Select Feature SQL:".$sql);
     $dbrow = getResultArray ( $con, $sql );
     $licenseinfoval = "";
-    $sql = "insert into $licenseinfotable values (1,'0','0','0','0','0','0','0','','','','0','0','0','Active','$currentdate');";
-    displaysignuplog("Insert  SQL:".$sql);
+    $sql = "insert into $licenseinfotable values (1,'0','0','0','0','0','0','0','$currentdate','','UL','0','0','0','Active','$emailvalidity');";
+    displaysignuplog("Insert  LicenseInfo SQL:".$sql);
     $result = execSQL ( $con, $sql );
     for($i = 0; $i < sizeof($dbrow); $i++){
         $featureindex = $dbrow[$i][0];
@@ -288,7 +293,14 @@ function updateLicenseInfo($con, $appid, $dbname){
             }
             $sql = "update $licenseinfotable set licensed_days = '$featurevalue', license_start_date  ='$currentdate',license_end_date ='$enddate';";
             $result = execSQL ( $con, $sql );
+			$sql = "update $licensehistorytable set licensed_days = '$featurevalue', license_start_date  ='$currentdate',license_end_date ='$enddate';";
         }
+		
+	$nextid = getNextIdValue ( $con, DBINFO::$APPDBNAME . ".licensehistory", "id" );
+    $isql = "insert into $licensehistorytable  values('$nextid','$appid','$currentdate','$enddate','$editionindex','$featureindex','Edition','','','','','');";
+	displaysignuplog("License History SQL:".$isql);
+    $result = execSQL ( $con, $isql );
+	
         $isql = "insert into customfeaturetable values ('$appid','$featureindex','$featurevalue','$currentdatetime')";
         displaysignuplog("Insert Custom SQL:".$isql);
         $result = execSQL ( $con, $isql );
