@@ -471,8 +471,7 @@ function createMauticConfigFile($domain,$dbname,$fromname,$frommail,$elastic_use
 	\'email_frequency_time\' => \'DAY\',
 	\'mailer_is_owner\' => 0,
 	\'background_import_if_more_rows_than\' => 5000,
-	\'video_url\' => \'https://www.youtube.com/embed/6mNKeUMmFGM\',
-	\'footer_text\' => \'To make sure you keep getting these emails in your INBOX, please add {from_email} to your address book or whitelist us.<br>Want out of the loop? {unsubscribe_text}<br><br>Our Postal Address: {postal_address}\',
+	\'footer_text\' => \'To make sure you keep getting these emails in your INBOX, please add {from_email} to your address book or whitelist us.<br />Want out of the loop? {unsubscribe_link}<br /><br />Our Postal Address: {postal_address}\',
 	);
 	?>';
     $configpath=MAUTIC_ROOT_DIR."/app/config/".$domain;
