@@ -103,7 +103,7 @@ try{
         displaysignuplog("Company:$companyname");
         displaysignuplog("User Mail:$frommail");
         displaysignuplog("Domain:$domain");
-        $isavailable=checkDomainAvailability($con,$domain);
+        $isavailable=checkDomainCpanel($con,$domain);
         if(!$isavailable){
             $url="http://$domain.".MAUTIC_DOMAIN."/index.php";
             die("url=".$url);
@@ -171,7 +171,16 @@ try{
     $msg = $ex->getMessage ();
     displaysignuplog("Exception Occur:".$msg);
 }
-
+function checkDomainCpanel($con,$domain){
+    $sql="select appid from applicationlist where f5='$domain';";
+    displaysignuplog("CPanel Domain Validation SQL:".$sql);
+    $dbrow = getResultArray ( $con, $sql );
+    $domainexist = true;
+    if(sizeof($dbrow) != 0){
+        $domainexist = false;
+    }
+    return $domainexist;
+}
 
 function checkDomainAvailability($con,$domain){
     $sql="select appid from applicationlist where f5='$domain';";
@@ -322,7 +331,7 @@ function updateLicenseInfo($con, $appid, $dbname){
             $result = execSQL ( $con, $sql );
 			$sql = "update $licensehistorytable set licensed_days = '$featurevalue', license_start_date  ='$currentdate',license_end_date ='$enddate';";
         }
-		
+
 	$nextid = getNextIdValue ( $con, DBINFO::$APPDBNAME . ".licensehistory", "id" );
     $isql = "insert into $licensehistorytable  values('$nextid','$appid','$currentdate','$enddate','$editionindex','$featureindex','Edition','','','','','');";
 	displaysignuplog("License History SQL:".$isql);
