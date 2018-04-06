@@ -6271,22 +6271,22 @@ function getOrganizationTZOffset($con) { // UTC_TIMEZONE_SUPPORT
 	$resultrows = getResultArray ( $con, $sql );
 	$usertimezone = $resultrows [0] [0];
 	$GLOBALS [$sessionkey]=$usertimezone;
-	}	
+	}
 	if ($usertimezone != "" || $usertimezone != NULL) {
 		$orgtimezone = $usertimezone;
 	} else {
 		$orgtimezone = $orgdetails [OrgizationMaster::$ORG_MASTER_TIMEZONE_INDEX];
 	}
-	if ($orgtimezone != '') {		
+	if ($orgtimezone != '') {
 		$orgtimezonearr = explode ( ")-", $orgtimezone );
 		if (sizeof ( $orgtimezonearr ) > 1) {
 			$origin_tz = $orgtimezonearr [1];
 		} else {
 			$origin_tz = $orgtimezonearr [0];
-		}		
+		}
 	} else {
 		$origin_tz = 'Asia/Kolkata';
-	}	
+	}
 	$origin_dtz = new DateTimeZone ( $origin_tz );
 	$remote_dtz = new DateTimeZone ( $remote_tz );
 	$origin_dt = new DateTime ( "now", $origin_dtz );
@@ -6347,20 +6347,30 @@ function getOrganizationTimeZone($con,$appid) {
 	} 	else {
 			$origin_tz = $orgtimezonearr [0];
 	  	}
-	}	
+	}
 	if(	$origin_tz == ''){
 		$origin_tz = 'Asia/Kolkata';
 	}
 	return $origin_tz;
 }
 
-function getConvertedDateTimeByTZ($tzoffset, $datetime, $byutcformat, $format="Y-m-d H:i:s") { // UTC_TIMEZONE_SUPPORT
+function getConvertedDateTimeByTZ($datetime, $byutcformat, $format="Y-m-d H:i:s") { // UTC_TIMEZONE_SUPPORT
+	$remote_tz = "UTC";
+	$origin_tz = 'Asia/Kolkata';	
+	$origin_dtz = new DateTimeZone ( $origin_tz );
+	$remote_dtz = new DateTimeZone ( $remote_tz );
+	$origin_dt = new DateTime ( "now", $origin_dtz );
+	$remote_dt = new DateTime ( "now", $remote_dtz );
+	$offset = $origin_dtz->getOffset ( $origin_dt ) - $remote_dtz->getOffset ( $remote_dt );
+	if(!IsTimeZoneSupport()){
+		$offset = 0;
+	}
 	if ($datetime != "") {
 		$dttimeinsecs = strtotime ( $datetime );
 		if ($byutcformat) {
-			$dttimeinsecs = $dttimeinsecs - $tzoffset;
+			$dttimeinsecs = $dttimeinsecs - $offset;
 		} else {
-			$dttimeinsecs = $dttimeinsecs + $tzoffset;
+			$dttimeinsecs = $dttimeinsecs + $offset;
 		}
 		$datetime = date ( $format, $dttimeinsecs );
 	}
