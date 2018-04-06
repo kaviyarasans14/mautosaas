@@ -62,6 +62,11 @@ function insertInLeadsengage($firstname,$lastname,$companyname,$frommail, $pwd,$
 	$asql = "select id from $leadtable where email = '$frommail'";
 	$autoidarr = getResultArray($con, $asql);
 	$autoid = $autoidarr[0][0];
+	$clickthrough = [
+            'lead'  => $autoid,
+	];
+	$ct = encodeArrayForUrl($clickthrough);
+	echo "<script>document.cookie = 'trackingct=$ct; path=/';</script>";
 	$segmentname = DBINFO::$SIGNUP_SEGMENTNAME;
 	$segsql = "select * from $segtable where alias = '$segmentname'";
 	$segarr = getResultArray($con, $segsql);
@@ -117,27 +122,12 @@ function sendSignupVerifyMail($firstname,$lastname,$email,$idhash,$con,$password
 	<head>
 		<title></title>
 		<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css'>
-		<style>
-		.butle{
-		text-align:center;text-decoration:none;font-family: Montserrat,sans-serif;transition: all .1s ease;color: #fff;font-weight: 400;font-size: 18px;margin-top: 10px;font-family: Montserrat,sans-serif;display: inline-block;letter-spacing: .6px;padding: 15px 30px;box-shadow: 0 1px 2px rgba(0,0,0,.36);white-space: nowrap;border-radius: 35px;background-color: #0071ff;border: #0071ff;
-		}
-		.marle{
-		margin: 0% 11.5%;background-color:#fff;padding: 50px 50px 50px 50px;border-bottom:5px solid #0071ff;
-		}
-		@media only screen and (min-width: 200px)and (max-width: 767px){
-.marle {
-    margin: 0px 5px; background-color: #fff; padding: 5px 0px; border-bottom: 5px solid #0071ff;
-}
-		.butle{
-		padding: 15px 20px;
-		}
-}
-		</style>
+		
 	</head>
 	<body aria-disabled='false' style='min-height: 300px;margin:0px;'>
 		<div style='background-color:#eff2f7'>
 			<div style='padding-top: 55px;'>
-				<div class='marle'>
+				<div class='marle' style='margin:0% 11.5%;background-color:#fff;padding: 50px 50px 50px 50px;border-bottom:5px solid #0071ff;'>
 					<p style='text-align:center;'><img height='1' width='1' src=\"$url\"></p>
 				
 					<p style='text-align:center;'><img src='https://s3.amazonaws.com/leadsroll.com/home/leadsengage_logo-black.png' class='fr-fic fr-dii' height='40'></p>
@@ -148,7 +138,7 @@ function sendSignupVerifyMail($firstname,$lastname,$email,$idhash,$con,$password
 							<p style='text-align:left;font-size:14px;font-family: Montserrat,sans-serif;'>Hi $firstname $lastname</p>
 
 							<p style='text-align:left;font-size:14px;line-height: 30px;font-family: Montserrat,sans-serif;'>Thanks for signing up! We're thrilled to have you on-board.
-								<br>Please click following link to verify your email and Login in to your account.</p><a href=\"$redirecturl\" class='butle'>Login to Your Account</a>
+								<br>Please click following link to verify your email and Login in to your account.</p><a href=\"$redirecturl\" class='butle' style='text-align:center;text-decoration:none;font-family: Montserrat,sans-serif;transition: all .1s ease;color: #fff;font-weight: 400;font-size: 18px;margin-top: 10px;font-family: Montserrat,sans-serif;display: inline-block;letter-spacing: .6px;padding: 15px 30px;box-shadow: 0 1px 2px rgba(0,0,0,.36);white-space: nowrap;border-radius: 35px;background-color: #0071ff;border: #0071ff;'>Login to Your Account</a>
 							<br>
 
 							<p style='text-align:left;font-size:14px;line-height: 30px;font-family: Montserrat,sans-serif;'>We're always around to help you set up and make the best use of the product. If you have any questions, just reply to this email, and we'll be on it.</p>

@@ -108,8 +108,10 @@ function validateForm() {
 		    
 		isvalidform = false;
 	}
-             
-        return isvalidform;
+	if(isvalidform){
+		document.cookie = "IsTrackingEnabled=true; path=/";
+	}
+	return isvalidform;
 }
 
 function validateEmail(emailid){  

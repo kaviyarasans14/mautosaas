@@ -2655,7 +2655,8 @@ ol li {
 }
 
 .form-field.error {
-    border-color: red
+    border-color: red;
+    border:solid 2px red;
 }
 
 .field-dropdown .icon-arrow-down {
@@ -2819,7 +2820,7 @@ label{
     line-height: 1.75;
 }
 .signup_Error{
-font-size:10px;
+font-size:12px;
 color:red;
 margin-top: -20px;
 transition:opacity .1s ease .1s;
