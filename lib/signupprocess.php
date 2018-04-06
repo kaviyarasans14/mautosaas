@@ -127,7 +127,7 @@ function sendSignupVerifyMail($firstname,$lastname,$email,$idhash,$con,$password
 	<body aria-disabled='false' style='min-height: 300px;margin:0px;'>
 		<div style='background-color:#eff2f7'>
 			<div style='padding-top: 55px;'>
-				<div class='marle' style='margin: 0% 11.5%;background-color:#fff;padding: 50px 50px 50px 50px;border-bottom:5px solid #0071ff;'>
+				<div class='marle' style='margin:0% 11.5%;background-color:#fff;padding: 50px 50px 50px 50px;border-bottom:5px solid #0071ff;'>
 					<p style='text-align:center;'><img height='1' width='1' src=\"$url\"></p>
 				
 					<p style='text-align:center;'><img src='https://s3.amazonaws.com/leadsroll.com/home/leadsengage_logo-black.png' class='fr-fic fr-dii' height='40'></p>
