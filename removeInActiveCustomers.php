@@ -38,16 +38,16 @@ function displayCleanUpDBlog($msg) {
 
 }
 try {
-    $apppdoconn = new PDOConnection('');
-    $con        = null;
-    if ($apppdoconn) {
-        $con = $apppdoconn->getConnection();
-        if ($con == null) {
-            throw new Exception($apppdoconn->getDBErrorMsg());
-        }
-    } else {
-        throw new Exception('Not able to connect to DB');
-    }
+	$apppdoconn = new PDOConnection("");
+	$con = null;
+	if ($apppdoconn) {
+		$con = $apppdoconn -> getConnection();
+		if ($con == null) {
+			throw new Exception($apppdoconn -> getDBErrorMsg());
+		}
+	} else {
+		throw new Exception("Not able to connect to DB");
+	}
     startTransaction($con);
     $sql                   = 'select date_added,email,domain FROM '.DBINFO::$SIGNUP_DBNAME.'.leads';
     $applist               = getResultArray($con, $sql);
@@ -59,8 +59,7 @@ try {
         $dateadded = $applist[$i][0];
         $email     = $applist[$i][1];
         $domain    = $applist[$i][2];
-		
-     if($dateadded!='' && $email!='' & $domain!='' ) {
+     if($dateadded !='' && $email !='' && $domain !='' ) {
         $updateddate=getConvertedDateTimeByTZ($dateadded,false);
         $hourdiff   = round((strtotime($currenttime) - strtotime($updateddate)) / 3600, 1);
 
