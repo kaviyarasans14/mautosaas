@@ -55,29 +55,28 @@ try {
     $currenttime           = date('Y-m-d H:i:s');
     $lastupdateddateandtime='';
 
-    for ($i = 0; $i < $numdbs; ++$i) {
+    for ($i = 0; $i < $numdbs; $i++) {
         $dateadded = $applist[$i][0];
         $email     = $applist[$i][1];
         $domain    = $applist[$i][2];
+   
      if($dateadded !='' && $email !='' && $domain !='' ) {
         $updateddate=getConvertedDateTimeByTZ($dateadded,false);
         $hourdiff   = round((strtotime($currenttime) - strtotime($updateddate)) / 3600, 1);
-
-        if ($hourdiff >= 48) {
             if ($domain != '') {
                 $sql       ='select f5 from '.DBINFO::$DBNAME.".applicationlist  where f5='$domain'";
                 $domainlist = getResultArray($con, $sql);
-                $numdbs     = sizeof($domainlist);
-                if ($numdbs == 0) {
-                    $sql='delete from '.DBINFO::$SIGNUP_DBNAME.".leads where email ='$email'";
-                    execSQL($con, $sql);
-					displayCleanUpDBlog('Datas Successfully Cleaned Up');
+                $domainlistsize    = sizeof($domainlist);
+				
+			    if ($domainlistsize === 0 && $hourdiff > 48) {
+                      $sql='delete from '.DBINFO::$SIGNUP_DBNAME.".leads where email ='$email'";
+                      execSQL($con, $sql);
+					  displayCleanUpDBlog('Datas Successfully Cleaned Up');
+                } else {
+                	displayCleanUpDBlog('No Datas For Cleaned Up');
                 }
             }
-        } else {
-			displayCleanUpDBlog('There Is No Data for Cleaning>');
         }
-      }
     }
 } catch (Exception $ex) {
     $msg = $ex->getMessage();
