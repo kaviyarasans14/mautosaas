@@ -9,9 +9,9 @@ function isMobile() {
     return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
 }
 $cssfile = 'css/apps.css';
-if(isMobile()){
-$cssfile = 'css/mobile.css';
-}
+//if(isMobile()){
+//$cssfile = 'css/mobile.css';
+//}
 ?>
 <!DOCTYPE html>
 <html>
@@ -34,23 +34,21 @@ $cssfile = 'css/mobile.css';
   <div class="name-field-wrapper">
     <div class="name-field">
       <div class="form-field">
-	<?php if (!isMobile()): ?>
-        <i class="icon-user"></i>
-	<?php endif; ?>
-        <input type="text" name="firstname" class="name-first_name" id="name-first_name" required="true"/>
+	<i class="icon-user"></i>
+	<input type="text" name="firstname" class="name-first_name" id="name-first_name" required="true"/>
 <label class="form-placeholder" id = "form-placeholder-first-name">First Name*</label>
 
 </div>
 <p id="firstname-error-wrapper" style="display:none;" class="signup_Error"></p>
 </div>
+</div>
 
-<div class="name-field">
+<div class="name-field" style="display:none;">
   <div class="form-field">
     <input type="text" name="lastname" class="name-last_name" required="true"/>
     <label class="form-placeholder">Last Name*</label>
   </div>
 <p id="lastname-error-wrapper" style="display:none;" class="signup_Error"></p>
-</div>
 </div>
 
 <div class="form-field">

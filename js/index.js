@@ -120,7 +120,7 @@ function validateEmail(emailid){
 	emailiderror.style.display = "none";
 	emailiderror.innerHTML = "";
 	emailidwidget.parentElement.className = "form-field";
-	var othersignup = 'Please signup with your business E-Mail (or) <a target="_parent" style="color:white;font-family: helvetica,arial;text-decoration: none;" href="http://www.cratiocrmsoftware.com/othersignup/"> <br><u style="color: rgb(204, 255, 0);font-size: 13px;">Click here</u></a> to contact our sales team.';
+	var othersignup = 'Please enter your business email or <a target="_blank" href="https://leadsengage.com/signup-free-trial/" style="color:blue;">Request a demo</a>';
 	var invalidemailsids = ["gmail", "yahoo", "hotmail", "live", "outlook", "rediffmail", "mail", "yandex","sify"];
 	var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 	var reg = /^([\w-\.]+@(?!gmail.com)(?!yahoo.com)(?!hotmail.com)(?!yahoo.co.in)(?!aol.com)(?!abc.com)(?!xyz.com)(?!pqr.com)(?!rediffmail.com)(?!live.com)(?!outlook.com)(?!me.com)(?!msn.com)(?!ymail.com)([\w-]+\.)+[\w-]{2,4})?$/;
@@ -137,7 +137,7 @@ function validateEmail(emailid){
 		isValidemail=false;                  
 	} else if (!reg.test(emailid)){
 		emailiderror.style.display = "block";
-		emailiderror.innerHTML = "Please fill your business email";
+		emailiderror.innerHTML = othersignup;
 		emailidwidget.parentElement.className += " error";
 		isValidemail=false;           
 	}	

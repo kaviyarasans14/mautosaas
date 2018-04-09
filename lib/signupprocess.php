@@ -92,6 +92,9 @@ function encodeArrayForUrl($array)
 {
 	return urlencode(base64_encode(serialize($array)));
 }
+function isMobile() {
+    return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
+}
 function sendSignupVerifyMail($firstname,$lastname,$email,$idhash,$con,$password){
 	$email_ID = DBINFO::$DEFAULT_EMAILID;
 	$leadtable = DBINFO::$SIGNUP_DBNAME.".leads";
@@ -103,6 +106,15 @@ function sendSignupVerifyMail($firstname,$lastname,$email,$idhash,$con,$password
             'stat'  => $idhash,
 	    'lead'  => $autoid,
 	];
+	$marlestyle = "background-color:#fff;border-bottom:5px solid #0071ff;";
+	$butlestyle = "text-align:center;text-decoration:none;font-family: Montserrat,sans-serif;transition: all .1s ease;color: #fff;font-weight: 400;font-size: 18px;margin-top: 10px;font-family: Montserrat,sans-serif;display: inline-block;letter-spacing: .6px;box-shadow: 0 1px 2px rgba(0,0,0,.36);white-space: nowrap;border-radius: 35px;background-color: #0071ff;border: #0071ff;";
+	if(isMobile()){
+		$marlestyle .= "margin:0px 5px;padding: 5px 0px;";
+		$butlestyle .= "padding: 15px 20px;";
+	} else {
+		$marlestyle .= "margin:0% 11.5%;padding: 50px 50px 50px 50px;";
+		$butlestyle .= "padding: 15px 30px;";
+	}
 	$ct = encodeArrayForUrl($clickthrough);
 	$activateUrl = DBINFO::$ACTIONVATION_LINK;
 	$redirecttable = DBINFO::$SIGNUP_DBNAME.".page_redirects";
@@ -127,7 +139,7 @@ function sendSignupVerifyMail($firstname,$lastname,$email,$idhash,$con,$password
 	<body aria-disabled='false' style='min-height: 300px;margin:0px;'>
 		<div style='background-color:#eff2f7'>
 			<div style='padding-top: 55px;'>
-				<div class='marle' style='margin:0% 11.5%;background-color:#fff;padding: 50px 50px 50px 50px;border-bottom:5px solid #0071ff;'>
+				<div class='marle' style='$marlestyle'>
 					<p style='text-align:center;'><img height='1' width='1' src=\"$url\"></p>
 				
 					<p style='text-align:center;'><img src='https://s3.amazonaws.com/leadsroll.com/home/leadsengage_logo-black.png' class='fr-fic fr-dii' height='40'></p>
@@ -138,7 +150,7 @@ function sendSignupVerifyMail($firstname,$lastname,$email,$idhash,$con,$password
 							<p style='text-align:left;font-size:14px;font-family: Montserrat,sans-serif;'>Hi $firstname $lastname</p>
 
 							<p style='text-align:left;font-size:14px;line-height: 30px;font-family: Montserrat,sans-serif;'>Thanks for signing up! We're thrilled to have you on-board.
-								<br>Please click following link to verify your email and Login in to your account.</p><a href=\"$redirecturl\" class='butle' style='text-align:center;text-decoration:none;font-family: Montserrat,sans-serif;transition: all .1s ease;color: #fff;font-weight: 400;font-size: 18px;margin-top: 10px;font-family: Montserrat,sans-serif;display: inline-block;letter-spacing: .6px;padding: 15px 30px;box-shadow: 0 1px 2px rgba(0,0,0,.36);white-space: nowrap;border-radius: 35px;background-color: #0071ff;border: #0071ff;'>Login to Your Account</a>
+								<br>Please click following link to verify your email and Login in to your account.</p><a href=\"$redirecturl\" class='butle' style='$butlestyle'>Login to Your Account</a>
 							<br>
 
 							<p style='text-align:left;font-size:14px;line-height: 30px;font-family: Montserrat,sans-serif;'>We're always around to help you set up and make the best use of the product. If you have any questions, just reply to this email, and we'll be on it.</p>
