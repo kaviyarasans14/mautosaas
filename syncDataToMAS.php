@@ -70,7 +70,6 @@ try {
 	  $action= $result[0][1];
 	  $dateandtime=$result[0][2];
 	}
-	$tzoffset = getOrganizationTZOffset($con);
 	$dateadded = getConvertedDateTimeByTZ ($dateandtime, false );
 	
     $sql="select planname from  ".$appdbname.".paymenthistory order by createdOn desc limit 1";
