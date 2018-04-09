@@ -2517,7 +2517,7 @@ ol li {
 
 .name-field,
 .phone-field {
-    width: 48.9%;
+    width: 100%;
     display: inline-block;
     vertical-align: top;
     position: relative;
@@ -2820,8 +2820,9 @@ label{
     line-height: 1.75;
 }
 .signup_Error{
-font-size:12px;
-color:red;
+font-size:14px;
+color:#ffffff;
 margin-top: -20px;
 transition:opacity .1s ease .1s;
+font-weight: 600;
 }
