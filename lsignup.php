@@ -36,7 +36,7 @@ $cssfile = 'css/apps.css';
       <div class="form-field">
 	<i class="icon-user"></i>
 	<input type="text" name="firstname" class="name-first_name" id="name-first_name" required="true"/>
-<label class="form-placeholder" id = "form-placeholder-first-name">First Name*</label>
+<label class="form-placeholder" id = "form-placeholder-first-name">Name*</label>
 
 </div>
 <p id="firstname-error-wrapper" style="display:none;" class="signup_Error"></p>

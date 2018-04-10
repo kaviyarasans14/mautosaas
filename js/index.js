@@ -61,16 +61,16 @@ function validateForm() {
 	var userdomainerror = document.getElementById("userdomain-error-wrapper");
         if (firstname == null || firstname == ''){
 		firstnameerror.style.display = "block";
-		firstnameerror.innerHTML = "Please Fill Your First Name";
+		firstnameerror.innerHTML = "Please Fill Your Name";
 		firstnamewidget.parentElement.className += " error";
 		isvalidform = false;
 	} 
-        if (lastname == null || lastname == ''){
-		lastnameerror.style.display = "block";
-		lastnameerror.innerHTML = "Please Fill Your Last Name";
-		lastnamewidget.parentElement.className += " error";
-		isvalidform = false;
-	} 
+        //if (lastname == null || lastname == ''){
+		//lastnameerror.style.display = "block";
+		//lastnameerror.innerHTML = "Please Fill Your Last Name";
+		//lastnamewidget.parentElement.className += " error";
+		//isvalidform = false;
+	//}
 
 	if (cname == null || cname == '') {
 		cnameerror.style.display = "block";

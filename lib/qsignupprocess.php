@@ -86,7 +86,7 @@ try{
         	$domain = $userdetails[0][4];
         	$usermobile = $userdetails[0][5];
         	$domain = strtolower($domain);
-        	$fromname=$firstname." ".$lastname;
+        	$fromname=$firstname;//." ".$lastname;
 	} else {
 		if(!isset($_REQUEST['userdomain'])){
 			die("Domain Not Found!");	
