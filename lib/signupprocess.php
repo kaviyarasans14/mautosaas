@@ -125,7 +125,7 @@ function sendSignupVerifyMail($firstname,$lastname,$email,$idhash,$con,$password
 	if (sizeof($result) > 0) {
 		$redirectid = $result[0][0];
 	}
-	$redirecturl = $signupurl."/r/".$redirectid."?ct=".$ct."&utm_source=leadsengage&utm_medium=email&utm_campaign=Activation+Email&utm_content=Activation+Email&email=".$email;
+	$redirecturl = $signupurl."/r/".$redirectid."?ct=".$ct."&email=".$email;
 	$url = $signupurl."/email/".$idhash.".gif";
 	$temp = "<!DOCTYPE html>
 <html>
