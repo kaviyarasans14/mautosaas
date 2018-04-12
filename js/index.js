@@ -41,17 +41,17 @@ function validateForm() {
 	var firstnamewidget = document.forms['signup']['firstname'];
 	var lastnamewidget = document.forms['signup']['lastname'];
 	var cnamewidget = document.forms['signup']['companyname'];
-        var emailidwidget = document.forms['signup']['useremail'];
-        var domainwidget = document.forms['signup']['userdomain'];
-        var mobilenowidget = document.forms['signup']['mobilenum'];
-        var passwordwidget = document.forms['signup']['password'];
+	var emailidwidget = document.forms['signup']['useremail'];
+    var domainwidget = document.forms['signup']['userdomain'];
+    var mobilenowidget = document.forms['signup']['mobilenum'];
+    var passwordwidget = document.forms['signup']['password'];
 	var firstname = firstnamewidget.value;
 	var lastname = lastnamewidget.value;
 	var cname = cnamewidget.value;
-        var emailid = emailidwidget.value;
-        var domain = domainwidget.value;
-        var mobileno = mobilenowidget.value;
-        var password = passwordwidget.value;
+    var emailid = emailidwidget.value;
+    var domain = domainwidget.value;
+    var mobileno = mobilenowidget.value;
+    var password = passwordwidget.value;
 	var firstnameerror = document.getElementById("firstname-error-wrapper");
 	var lastnameerror = document.getElementById("lastname-error-wrapper");
 	var cnameerror = document.getElementById("companyname-error-wrapper");
@@ -59,13 +59,13 @@ function validateForm() {
 	var mobilenoerror = document.getElementById("mobilenum-error-wrapper");
 	var passworderror = document.getElementById("password-error-wrapper");
 	var userdomainerror = document.getElementById("userdomain-error-wrapper");
-        if (firstname == null || firstname == ''){
+    if (firstname == null || firstname == ''){
 		firstnameerror.style.display = "block";
 		firstnameerror.innerHTML = "Please Fill Your Name";
 		firstnamewidget.parentElement.className += " error";
 		isvalidform = false;
 	} 
-        //if (lastname == null || lastname == ''){
+    //if (lastname == null || lastname == ''){
 		//lastnameerror.style.display = "block";
 		//lastnameerror.innerHTML = "Please Fill Your Last Name";
 		//lastnamewidget.parentElement.className += " error";
@@ -110,6 +110,7 @@ function validateForm() {
 	}
 	if(isvalidform){
 		document.cookie = "IsTrackingEnabled=true; path=/";
+		sendSignupMail(cname,firstname,lastname,emailid,domain,mobileno,password);
 	}
 	return isvalidform;
 }
@@ -246,8 +247,8 @@ function createSignup(){
 			if (xmlhttp.readyState == 4 && xmlhttp.status == 200){
 				var response = xmlhttp.responseText;                               
 				if (response.toString().indexOf("emailexist") != -1) {
-					
-					isValidemail=false;      
+
+					isValidemail=false;
 				} else{
 					//alert("Response"+response);
 					if(response.toString().indexOf("url") != -1){
@@ -269,4 +270,36 @@ function createSignup(){
 		xmlhttp.send();
 	}, 500);
 	return isValidemail;
+}
+function sendSignupMail(cname,firstname,lastname,emailid,domain,mobileno,password){
+	var requesturl = "?companyname="+cname+"&firstname="+firstname+"&lastname="+lastname+"&useremail="+emailid+"&userdomain="+domain+"&mobilenum="+mobileno+"&password="+password;
+    var xmlhttp;
+    var isvalidSignup = false;
+    if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp = new XMLHttpRequest();
+    }else{// code for IE6, IE5
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange = function () {
+    	if (xmlhttp.readyState == 4 && xmlhttp.status == 200){
+			var response = xmlhttp.responseText;
+			if(response.toString().indexOf("signupsuccessct") != -1){
+				var res = response.split("=");
+				var ct = res[1];
+				var leadid = res[2];
+				var trackinghash = res[3];
+                var signupsuccess = res[4];
+				var response = ct+";"+leadid+";"+trackinghash+";"+signupsuccess;
+	        	isvalidSignup = true;
+            	document.cookie = "trackingct="+ct+"; path=/";
+            //	window.location = "http://test.leadsengage.com";
+                parent.postMessage(response, '*');
+			} else {
+		    	isvalidSignup = false;
+        	}
+		}
+	}
+    xmlhttp.open("POST", "lib/signupprocess.php"+requesturl, false);
+	xmlhttp.send();
+    return isvalidSignup;
 }

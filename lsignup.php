@@ -28,7 +28,7 @@ $cssfile = 'css/apps.css';
 </head>
 <body>
 <div class="form-wrapper">
-<form name="signup" action='lib/signupprocess.php' autocomplete="off"  onsubmit="return validateForm();" method='POST' class="form-field-container fdesk-signupform" data-redirect="/signup/thank-you" data-redirect-spam="/signup/success" novalidate="novalidate">
+<form name="signup" autocomplete="off"  onsubmit="validateForm();" method='POST' class="form-field-container fdesk-signupform" data-redirect="/signup/thank-you" data-redirect-spam="/signup/success" novalidate="novalidate">
   <b id="error"></b>
 <fieldset id= "signup_fieldset">
   <div class="name-field-wrapper">

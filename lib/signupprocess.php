@@ -27,15 +27,20 @@ if ($pdoconn) {
 	throw new Exception ( "Not able to connect to DB" );
 }
 
-$idhash = insertInLeadsengage($firstname,$lastname,$companyname,$frommail, $pwd,$usermobile, $domain, $con);
+$res = insertInLeadsengage($firstname,$lastname,$companyname,$frommail, $pwd,$usermobile, $domain, $con);
+$idhash = $res[0];
+$ct = $res[1];
+$leadid = $res[2];
+$trackinghash = $res[3];
 $content = sendSignupVerifyMail($firstname,$lastname,$frommail,$idhash,$con,$pwd);
 $subject = "Activate your LeadsEngage Account Now";
 //file_put_contents("/var/www/log.txt",$content."\n",FILE_APPEND);
 $emailids = array();
 $emailids[]=$frommail;
 $reason = smtpmail ( $emailids, $subject, $content, "", [], false, "", "" );
-echo "<script>top.window.location = 'https://leadsengage.com/thankyou/'</script>";
-die;
+//echo "<script>top.window.location = 'https://leadsengage.com/thankyou/'</script>";
+$response="signupsuccessct=".$ct."=".$leadid."=".$trackinghash."=".DBINFO::$SIGNUP_SUCCESS;
+die($response);
 
 function insertInLeadsengage($firstname,$lastname,$companyname,$frommail, $pwd,$usermobile, $domain, $con){
 	$leadtable = DBINFO::$SIGNUP_DBNAME.".leads";
@@ -66,7 +71,7 @@ function insertInLeadsengage($firstname,$lastname,$companyname,$frommail, $pwd,$
             'lead'  => $autoid,
 	];
 	$ct = encodeArrayForUrl($clickthrough);
-	echo "<script>document.cookie = 'trackingct=$ct; path=/';</script>";
+	//echo "<script>document.cookie = 'trackingct=$ct; path=/';</script>";
 	$segmentname = DBINFO::$SIGNUP_SEGMENTNAME;
 	$segsql = "select * from $segtable where alias = '$segmentname'";
 	$segarr = getResultArray($con, $segsql);
@@ -85,7 +90,13 @@ function insertInLeadsengage($firstname,$lastname,$companyname,$frommail, $pwd,$
 	$idhash = uniqid();
 	$isql = "insert into $stattable (lead_id,email_id,email_address,is_read,is_failed,tracking_hash,is_unsubscribe,is_bounce,date_sent) values ('$autoid','$email_ID','$frommail',0,0,'$idhash',0,0,'$dateidentified')";
 	execSQL($con, $isql);
-	return $idhash;
+    $trackinghash = hash('sha1', uniqid(mt_rand()));
+	$retarr = array();
+	$retarr[] = $idhash;
+	$retarr[] = $ct;
+    $retarr[] = $autoid;
+	$retarr[] = $trackinghash;
+	return $retarr;
 }
 
 function encodeArrayForUrl($array)
