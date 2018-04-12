@@ -74,7 +74,7 @@ function validateForm() {
 
 	if (cname == null || cname == '') {
 		cnameerror.style.display = "block";
-		cnameerror.innerHTML = "Please Fill Your Company Name";
+		cnameerror.innerHTML = "Please Fill Your Company";
 		cnamewidget.parentElement.className += " error";
 		isvalidform = false;
 	}          
