@@ -38,6 +38,7 @@ function displayCleanUpDBlog($msg) {
 
 }
 try {
+
 	$apppdoconn = new PDOConnection("");
 	$con = null;
 	if ($apppdoconn) {
