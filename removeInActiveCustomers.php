@@ -78,6 +78,7 @@ try {
             }
         }
     }
+    commitTransaction($con);
 } catch (Exception $ex) {
     $msg = $ex->getMessage();
     echo '<br><br>'.'Error:'.$msg;
