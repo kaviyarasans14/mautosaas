@@ -1,3 +1,4 @@
+<script>
 window.addEventListener('message', function(event) {
     try {
         var response = event.data;
@@ -14,3 +15,4 @@ window.addEventListener('message', function(event) {
     } catch (err) {
     }
 }, false);
+</script>

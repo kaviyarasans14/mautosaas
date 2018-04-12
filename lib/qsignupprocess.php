@@ -210,14 +210,12 @@ function checkEmailAvail($con,$email) {
     $leadtable = DBINFO::$SIGNUP_DBNAME.".leads";
     $sql="select email,domain from $leadtable where email='$email';";
     $dbrow = getResultArray ( $con, $sql );
-	$email=$_REQUEST['checkemailavailability'];
-	$domain = $dbrow[0][1];
-    if($email == $dbrow[0][0] && $domain == "") {
-    	return true;
-    }
-    $emailexist = true;
     if(sizeof($dbrow) != 0){
-        return $emailexist = false;
+        if($dbrow[0][1] == ""){
+            return true;
+        } else {
+            return false;
+        }
     } else {
         return true;
     }

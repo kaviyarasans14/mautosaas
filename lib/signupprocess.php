@@ -77,10 +77,11 @@ function insertInLeadsengage($firstname,$lastname,$companyname,$frommail, $pwd,$
 	$segarr = getResultArray($con, $segsql);
 	if (sizeof($segarr) > 0) {
 		$segmentid = $segarr[0][0];
-		$leadid = $segarr[0][1];
-		if($leadid == $autoid){
-			$isegment = "update $segmenttable set leadlist_id='$segmentid',lead_id='$autoid',date_added='$dateidentified',manually_removed='0',manually_added='1'";
-		    execSQL($con, $isegment);
+		$sql = "select lead_id from $segmenttable where leadlist_id = '$segmentid' and lead_id = '$autoid'";
+        $seglist = getResultArray($con, $sql);
+		if(sizeof($seglist) > 0){
+			//$isegment = "update $segmenttable set lead_id='$autoid',date_added='$dateidentified',manually_removed='0',manually_added='1' where leadlist_id = '$segmentid'";
+		    //execSQL($con, $isegment);
 		} else {
 			$isegment = "insert into $segmenttable values (" . $segmentid . "," . $autoid . ",'" . $dateidentified . "',0,1)";
 		    execSQL($con, $isegment);

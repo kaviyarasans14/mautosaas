@@ -25,6 +25,24 @@ $cssfile = 'css/apps.css';
 <script src="jquery-3.3.1.min.js"></script>
 <script src="js/inputfieldvalidator.js"></script>
 <script src="js/index.js"></script>
+    <script>
+        window.addEventListener('message', function(event) {
+            try {
+                var response = event.data;
+                response = response.split(";");
+                var sessionid = response[2];
+                var leadid = response[1];
+                var ct = response[0];
+                var signupsuccess = response[3];
+                document.cookie = "IsTrackingEnabled=true; path=/";
+                document.cookie = "trackingct="+ct+"; path=/";
+                document.cookie = "mautic_session_id="+sessionid+"; path=/";
+                document.cookie = sessionid+"="+leadid+"; path=/";
+                window.location = signupsuccess;
+            } catch (err) {
+            }
+        }, false)
+    </script>
 </head>
 <body>
 <div class="form-wrapper">
