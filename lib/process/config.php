@@ -3,22 +3,22 @@
 class DBINFO {
 
 	public static $HOSTNAME = 'localhost';
-	public static $APPDBNAME = 'leadsengage_base';
-	public static $COMMONDBNAME = 'leadsengage_base';
-	public static $DBNAME = 'dacamsys_hrms';
+	public static $APPDBNAME = 'leadsengage_apps';
+	public static $COMMONDBNAME = 'leadsengage_apps';
+	public static $DBNAME = 'leadsengage_apps';
 	public static $DBUSER = 'root';
 	public static $DBPWD = 'dacam';
 	public static $DBTYPE = 'mysql';
 	public static $IS_AWS_SERVER = FALSE;
 	public static $PORT = '3306';
 	public static $LICENSEAPPID = 'cops';
-	public static $SIGNUP_DBNAME = 'leadsengage_signup';
+	public static $SIGNUP_DBNAME = 'mauto_base';
 	public static $SIGNUP_SEGMENTNAME = 'signupcontacts';
 	public static $DEFAULT_CREATEDBY_ID = '17';
 	public static $DEFAULT_CREATEDBY_NAME = 'Kaviarasan S';
 	public static $DEFAULT_EDITIONINDEX = '2';
-	public static $DEFAULT_EMAILID = '1';
-	public static $SIGNUP_URL = "http://dacam.localhost/mauto/index.php";
+	public static $DEFAULT_EMAILID = '63';
+	public static $SIGNUP_URL = "http://localhost/mauto/index.php";
 	public static $ACTIONVATION_LINK = "http://localhost/mautosaas/lib/activation.php";
 	public static $LEAD_STATUS = "Signup";
 	public static $LEAD_STAGE = "Trial";

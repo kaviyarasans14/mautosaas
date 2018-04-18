@@ -288,6 +288,8 @@ function updateLicenseInfo($con, $appid, $dbname){
     displaysignuplog("Edition SQL:".$sql);
     $dbrow = getResultArray ( $con, $sql );
     $featureset = $dbrow[0][0];
+	$sql = 'delete from appeditiontable where appid=' . '\'' . $appid . '\'';
+	$result = execSQL ( $con, $sql );
     $isql = "insert into appeditiontable values ('$appid','$editionindex','$featureset')";
     displaysignuplog("Insert Edition SQL:".$isql);
     $result = execSQL ( $con, $isql );
@@ -295,7 +297,7 @@ function updateLicenseInfo($con, $appid, $dbname){
     displaysignuplog("Select Feature SQL:".$sql);
     $dbrow = getResultArray ( $con, $sql );
     $licenseinfoval = "";
-    $sql = "insert into $licenseinfotable values (1,'0','0','0','0','0','0','0','$currentdate','','UL','0','0','0','Active','$emailvalidity');";
+    $sql = "insert into $licenseinfotable values (1,'0','0','0','0','0','0','0','$currentdate','','UL','0','0','0','Active','$emailvalidity','Elastic Email');";
     displaysignuplog("Insert  LicenseInfo SQL:".$sql);
     $result = execSQL ( $con, $sql );
     for($i = 0; $i < sizeof($dbrow); $i++){
