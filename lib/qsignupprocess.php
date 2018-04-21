@@ -5,6 +5,7 @@ include("process/config.php");
 include("process/field.php");
 include("util.php");
 include("process/createElasticEmailSubAccount.php");
+include("process/createSendGridAccount.php");
 
 define('MAUTIC_ROOT_DIR', "/var/www/mauto");
 define('MAUTIC_DOMAIN', "localhost/mauto");
@@ -126,32 +127,70 @@ try{
             $result = execSQL ( $con, $sql );
             updateLicenseInfo($con, $appid,$dbname);
             displaysignuplog("DB Name:".$dbname);
-            $elasticuser="qc@leadsengage.net";
-            $elasticpwd="986d3ea1-db10-4795-9add-cc9301792dfb";
+            if(DBINFO::$SIGNUP_ELASTIC) {
+                $elasticuser = "qc@leadsengage.net";
+                $elasticpwd = "986d3ea1-db10-4795-9add-cc9301792dfb";
+                $transport = "mautic.transport.elasticemail";
+                $apikey = "";
+            } else {
+                $elasticuser = "";
+                $elasticpwd = "";
+                $transport = "mautic.transport.sendgrid_api";
+                $apikey = "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";
+            }
             if(strpos(MAUTIC_DOMAIN, "leadsengage.com") !== false){
-                $status=createSubAccount(
-                    "$domain@leadsengage.net","LeadsEngage@44#");
-                if($status[1] == ""){
-                    $elasticuser="$domain@leadsengage.net";
-                    $elasticpwd=$status[0];
-                    $isupdated=updateHTTPNotification($status[0], "http://$domain.".MAUTIC_DOMAIN."/mailer/elasticemail/callback");
-                    if(!$isupdated){
-                        $response['alert']="HTTP Notification not enabled!Do Manually.";
+
+                if(DBINFO::$SIGNUP_ELASTIC) {
+                    $status = createSubAccount(
+                        "$domain@leadsengage.net", "LeadsEngage@44#");
+                    if ($status[1] == "") {
+                        $elasticuser = "$domain@leadsengage.net";
+                        $elasticpwd = $status[0];
+                        $isupdated = updateHTTPNotification($status[0], "http://$domain." . MAUTIC_DOMAIN . "/mailer/elasticemail/callback");
+                        if (!$isupdated) {
+                            $response['alert'] = "HTTP Notification not enabled!Do Manually.";
+                        }
+                        $isupdated = updateAccountProfile($status[0]);
+                        if (!$isupdated) {
+                            if ($response['alert'] != "") {
+                                $response['alert'] .= "Sub Account Profile Not Updated.Do Manually.";
+                            } else {
+                                $response['alert'] = "Sub Account Profile Not Updated.Do Manually.";
+                            }
+                        }
+                    } else {
+                        $response['alert'] = "Elastic Sub Account Creation Failed:" . $status[1];
                     }
-                    $isupdated=updateAccountProfile($status[0]);
-                    if(!$isupdated){
-                        if($response['alert'] != ""){
-                            $response['alert'].="Sub Account Profile Not Updated.Do Manually.";
-                        }else{
-                            $response['alert']="Sub Account Profile Not Updated.Do Manually.";
+                } else {
+                    $elasticuser = "$domain@leadsengage.net";
+                    $transport = "mautic.transport.sendgrid_api";
+                    $status = createSubuser($elasticuser,$frommail,"LeadsEngage@44#");
+                    if($status){
+                        $apikey = createAPI($elasticuser);
+                        if($apikey != ""){
+                            $isupdated = updateEventnotificationURL($elasticuser,"http://$domain." . MAUTIC_DOMAIN . "/mailer/elasticemail/callback");
+                            if($isupdated){
+                                updateWhiteLabelDomain($elasticuser);
+                                updateWhiteLabelLink($elasticuser);
+                            } else {
+                                if ($response['alert'] != "") {
+                                    $response['alert'] .= "Sub Account Profile Not Updated.Do Manually.";
+                                } else {
+                                    $response['alert'] = "Sub Account Profile Not Updated.Do Manually.";
+                                }
+                            }
+                        } else {
+                            if ($response['alert'] != "") {
+                                $response['alert'] .= "Sub Account Profile Not Updated.Do Manually.";
+                            } else {
+                                $response['alert'] = "Sub Account Profile Not Updated.Do Manually.";
+                            }
                         }
                     }
-                }else{
-                    $response['alert']="Elastic Sub Account Creation Failed:".$status[1];
                 }
             }
 
-            createMauticConfigFile($domain,$dbname,$fromname,$frommail,$elasticuser,$elasticpwd);
+            createMauticConfigFile($domain,$dbname,$fromname,$frommail,$elasticuser,$elasticpwd,$transport,$apikey);
             createMauticFirstUser($con,$dbname,$frommail,$firstname,$lastname,$pwd);
             commitTransaction($con);
             $url="http://$domain.".MAUTIC_DOMAIN."/index.php";
@@ -421,7 +460,7 @@ function createSaasDatabase($con) {
     return $response;
 }
 
-function createMauticConfigFile($domain,$dbname,$fromname,$frommail,$elastic_user,$elastic_pwd){
+function createMauticConfigFile($domain,$dbname,$fromname,$frommail,$elastic_user,$elastic_pwd,$transport,$apikey){
     $commondbname = DBINFO::$APPDBNAME;
     $parameters='<?php
 	$parameters = array(
@@ -437,7 +476,7 @@ function createMauticConfigFile($domain,$dbname,$fromname,$frommail,$elastic_use
 		\'db_server_version\' => \'5.5.58-0ubuntu0.14.04.1\',
 		\'mailer_from_name\' => \''.$fromname.'\',
 		\'mailer_from_email\' => \''.$frommail.'\',
-		\'mailer_transport\' => \'mautic.transport.elasticemail\',
+		\'mailer_transport\' => \''.$transport.'\',
 		\'mailer_host\' => null,
 		\'mailer_port\' => null,
 		\'mailer_user\' => \''.$elastic_user.'\',
@@ -470,6 +509,7 @@ function createMauticConfigFile($domain,$dbname,$fromname,$frommail,$elastic_use
 	\'mailer_is_owner\' => 0,
 	\'background_import_if_more_rows_than\' => 5000,
 	\'footer_text\' => \'To make sure you keep getting these emails in your INBOX, please add {from_email} to your address book or whitelist us.<br />Want out of the loop? {unsubscribe_link}<br /><br />Our Postal Address: {postal_address}\',
+	\'mailer_api_key\' => \''.$apikey.'\',
 	);
 	?>';
     $configpath=MAUTIC_ROOT_DIR."/app/config/".$domain;
