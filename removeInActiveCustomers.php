@@ -70,7 +70,7 @@ try {
                 $domainlistsize    = sizeof($domainlist);
 				
 			    if ($domainlistsize === 0 && $hourdiff > 48) {
-                      $sql='delete from '.DBINFO::$SIGNUP_DBNAME.".leads where email ='$email'";
+					  $sql="update ".DBINFO::$SIGNUP_DBNAME.".leads set domain='' where email ='$email'";
                       execSQL($con, $sql);
 					  displayCleanUpDBlog('Datas Successfully Cleaned Up');
                 } else {

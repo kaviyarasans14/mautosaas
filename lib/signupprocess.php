@@ -37,7 +37,9 @@ $subject = "Activate your LeadsEngage Account Now";
 //file_put_contents("/var/www/log.txt",$content."\n",FILE_APPEND);
 $emailids = array();
 $emailids[]=$frommail;
-$reason = smtpmail ( $emailids, $subject, $content, "", [], false, "", "" );
+$emailids[]='';
+$emailids[]='sales@leadsengage.com';
+$reason = smtpmail ( $emailids, $subject, $content, "", [], true, "", "" );
 //echo "<script>top.window.location = 'https://leadsengage.com/thankyou/'</script>";
 $response="signupsuccessct=".$ct."=".$leadid."=".$trackinghash."=".DBINFO::$SIGNUP_SUCCESS;
 die($response);
@@ -54,7 +56,8 @@ function insertInLeadsengage($firstname,$lastname,$companyname,$frommail, $pwd,$
     $leadstatus = DBINFO::$LEAD_STATUS;
 	date_default_timezone_set('UTC');
 	$dateidentified = date('Y-m-d H:i:s');
-	$sql="select email,domain from $leadtable where email='$frommail' and domain='';";
+
+	$sql="select email,domain from $leadtable where email='$frommail' and domain='' OR domain IS NULL;";
 	$dbrow = getResultArray ( $con, $sql );
 	if(sizeof($dbrow) > 0){
 	   $sql = "update $leadtable set firstname='$firstname',lastname='$lastname',company_new='$companyname',email='$frommail',mobile='$usermobile',domain='$domain',password='$pwd',created_by='$userid',created_by_user='$username',is_published='1',owner_id='$userid',date_identified='$dateidentified',date_added='$dateidentified',lead_status='$leadstatus',lead_stage='$leadstage' where email='$frommail'";

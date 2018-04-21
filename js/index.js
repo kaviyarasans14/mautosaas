@@ -85,6 +85,11 @@ function validateForm() {
 	if (!validateDomain(domain)) {             
 		isvalidform = false;         
 	}
+	
+	if(domain.indexOf(' ') >= 0){
+		domain =domain.replace(/\s+/g, '');
+	}
+	
 	if (password == null || password == '') {
 		passworderror.style.display = "block";
 		passworderror.innerHTML = "Please Fill Your Password";
