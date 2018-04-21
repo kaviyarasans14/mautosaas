@@ -75,10 +75,6 @@ try{
 	if(!isset($_REQUEST['signupmode'])){
        		$frommail=$_REQUEST['email'];
 	        $userdetails = getUserDetails($con,$frommail);
-        	if(sizeof($userdetails) == 0){
-        	   $url = "https://leadsengage.com/activation-expired";
-        	   die("url=".$url);
-        	}
 	        $firstname = $userdetails[0][0];
         	$lastname = $userdetails[0][1];
 	        $companyname = $userdetails[0][2];
@@ -86,6 +82,10 @@ try{
         	$domain = $userdetails[0][4];
         	$usermobile = $userdetails[0][5];
         	$domain = strtolower($domain);
+            if(empty($domain)) {
+            $url = "https://leadsengage.com/activation-expired";
+            die("url=".$url);
+            }
         	$fromname=$firstname;//." ".$lastname;
 	} else {
 		if(!isset($_REQUEST['userdomain'])){
