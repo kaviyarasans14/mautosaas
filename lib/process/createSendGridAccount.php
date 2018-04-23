@@ -11,7 +11,7 @@ error_reporting ( E_ALL );
 
 //$notiresult = updateEventnotificationURL($subusername);
 
-define('SEND_GRID_API', "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");
+define('SEND_GRID_API', "");
 
 function createSubuser($username, $email,$password){
     $data_array['username']=$username;
