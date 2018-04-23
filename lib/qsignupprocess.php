@@ -136,7 +136,7 @@ try{
                 $elasticuser = "";
                 $elasticpwd = "";
                 $transport = "mautic.transport.sendgrid_api";
-                $apikey = "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";
+                $apikey = "";
             }
             if(strpos(MAUTIC_DOMAIN, "leadsengage.com") !== false){
 
