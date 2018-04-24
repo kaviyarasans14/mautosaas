@@ -16,7 +16,7 @@ $frommail=$_REQUEST['useremail'];
 $domain=$_REQUEST['userdomain'];
 $usermobile=$_REQUEST['mobilenum'];
 $pwd=$_REQUEST['password'];
-
+$domain = str_replace(' ', '', $domain);
 $pdoconn = new PDOConnection ( "" );
 if ($pdoconn) {
 	$con = $pdoconn->getConnection ();
@@ -37,9 +37,9 @@ $subject = "Activate your LeadsEngage Account Now";
 //file_put_contents("/var/www/log.txt",$content."\n",FILE_APPEND);
 $emailids = array();
 $emailids[]=$frommail;
-$emailids[]='';
-$emailids[]='sales@leadsengage.com';
-$reason = smtpmail ( $emailids, $subject, $content, "", [], true, "", "" );
+//$emailids[]='';
+//$emailids[]='sales@leadsengage.com';
+$reason = smtpmail ( $emailids, $subject, $content, "", [], false, "", "" );
 //echo "<script>top.window.location = 'https://leadsengage.com/thankyou/'</script>";
 $response="signupsuccessct=".$ct."=".$leadid."=".$trackinghash."=".DBINFO::$SIGNUP_SUCCESS;
 die($response);

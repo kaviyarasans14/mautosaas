@@ -56,6 +56,7 @@ try{
     if(isset($_REQUEST['checkavailability'])){
         $domain=$_REQUEST['checkavailability'];
         $domain = strtolower($domain);
+		$domain = str_replace(' ', '', $domain);
         $isavailable=checkDomainAvailability($con,$domain);
         if($isavailable){
             die("domainnotexists");
