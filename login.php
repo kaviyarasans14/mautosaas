@@ -1,3 +1,18 @@
+<?php
+/*
+*@copyright   2018 Leadsengage Contributors. All rights reserved
+*@author      Leadsengage
+*
+*@link        http://leadsengage.com
+*/
+function isMobile() {
+    return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
+}
+//$cssfile = 'width: 50%;margin-left: 25%;margin-top: 10%;';
+//if(isMobile()){
+    $cssfile = 'width: 100%;padding:2%;margin-top: 10%;';
+//}
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -12,9 +27,7 @@
     <link rel="icon" type="image/ico" href='images/favicon.ico' />
     <style>
          .loginpanel{
-        width: 50%;
-        margin-left: 25%;
-        margin-top: 10%;
+        <?php echo $cssfile;?>
     }
     .btnproceed{  
         text-transform: uppercase;
@@ -42,6 +55,9 @@
         outline: 0;
         box-shadow: none; 
     }
+         #domain::placeholder{
+             text-overflow:ellipsis;
+         }
     #error {
     font-size: .75rem;
     color: red;
@@ -63,7 +79,7 @@
   <span style="
     background: #f7f7f7;
     color: #333;
-    font-size: 1rem;
+    font-size: 12px;
 " class="input-group-addon" id="basic-addon2">.leadsengage.com</span>
    </div>
   <button type="submit" class="btn btnproceed" >Proceed</button>

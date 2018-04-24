@@ -115,4 +115,34 @@ function updateAccountProfile($apikey){
         return false;
     }
 }
+
+function checkStatusofElastic($apikey){
+    $data_array['apikey'] = $apikey;
+    $ch = curl_init('https://api.elasticemail.com/v2/account/load');
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data_array));
+    curl_setopt($ch, CURLOPT_HEADER, false);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+//curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen($data_string)));
+    $result = curl_exec($ch);
+    $presponse = json_decode($result, true);
+    if(isset($presponse['success']) && $presponse['success']){
+        $status = $presponse['data']['statusformatted'];
+        $status = $presponse['data']['statusformatted'];
+        if($status == "Active"){
+            //displaysignuplog("Sub Account Has been Active.");
+            return true;
+        } else {
+            //displaysignuplog("Sub Account Has been ".$status);
+            return false;
+        }
+        //displaysignuplog("Sub Account Profile Updated Successfully.");
+        return true;
+    }else{
+        //displaysignuplog("Sub Account Profile Updated Failed.Error:".$presponse['error']);
+        return false;
+    }
+}
 ?>

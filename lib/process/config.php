@@ -24,6 +24,7 @@ class DBINFO {
 	public static $LEAD_STAGE = "Trial";
 	public static $EMAIL_VALIDITY="7";
     public static $SIGNUP_SUCCESS="http://test.leadsengage.com";
+    public static $SIGNUP_ELASTIC = false;
 
 }
 
