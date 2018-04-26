@@ -168,7 +168,7 @@ try{
                     if($status){
                         $apikey = createAPI($elasticuser);
                         if($apikey != ""){
-                            $isupdated = updateEventnotificationURL($elasticuser,"http://$domain." . MAUTIC_DOMAIN . "/mailer/elasticemail/callback");
+                            $isupdated = updateEventnotificationURL($elasticuser,"http://$domain." . MAUTIC_DOMAIN . "/mailer/sendgrid_api/callback");
                             if($isupdated){
                                 updateWhiteLabelDomain($elasticuser);
                                 updateWhiteLabelLink($elasticuser);

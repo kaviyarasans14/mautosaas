@@ -81,11 +81,11 @@ function updateEventnotificationURL($subusername,$url){
     $data_array['enabled']=true;
     $data_array['url']=$url;
     $data_array['bounce']=true;
-    //$data_array['group_resubscribe']=true;
+    $data_array['group_resubscribe']=true;
     //$data_array['delivered']=true;
-    //$data_array['group_unsubscribe']=true;
+    $data_array['group_unsubscribe']=true;
     $data_array['spam_report']=true;
-    //$data_array['deferred']=true;
+    $data_array['deferred']=true;
     $data_array['unsubscribe']=true;
     //$data_array['processed']=true;
     //$data_array['open']=true;
