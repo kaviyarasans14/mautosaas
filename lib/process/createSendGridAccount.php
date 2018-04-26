@@ -78,7 +78,6 @@ function createAPI($subusername){
 }
 
 function updateEventnotificationURL($subusername,$url){
-
     $data_array['enabled']=true;
     $data_array['url']=$url;
     $data_array['bounce']=true;
