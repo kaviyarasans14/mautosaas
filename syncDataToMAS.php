@@ -65,12 +65,13 @@ try {
 	$username="";
 	$action="";
 	$dateandtime="";
+    $dateadded="";
 	if(sizeof($result) > 0 ){
 	  $username=$result[0][0];
 	  $action= $result[0][1];
-	  $dateandtime=$result[0][2];
+      $dateadded=$result[0][2];
 	}
-	$dateadded = getConvertedDateTimeByTZ ($dateandtime, false );
+
     $sql="select planname from  ".$appdbname.".paymenthistory where paymentstatus='Paid' order by createdOn desc limit 1";
 	$result = getResultArray($con, $sql);
 	$plantype="";
@@ -107,10 +108,12 @@ try {
 	   }else {
 	   	  $availemailcredits= $totalemailcount - $actualemailcount ;
 	   }
-	  
+	  $licenseenddays=empty($licenseenddays) ? "NULL" :"'".$licenseenddays."'";
+      $dateadded=     empty($dateadded) ? "NULL" :"'".$dateadded."'";
+
 	  $leadtable = DBINFO::$SIGNUP_DBNAME.".leads";
-      $sql="update $leadtable set plan_type='$plantype',validity_start_date='$licensestartdays',validity_end_date='$licenseenddays',total_email_credits='$totalemailcount',used_email_credits='$actualemailcount',available_email_credits='$availemailcredits',total_contacts_credits='$totalrecordcount',used_contacts_credits='$actualrecordcount',available_contacts_credit='$availcontactcredits',status='$appstatus',bounce='$bounce',last_activity='$action',last_activity_in_app='$dateadded' where email='$email' and domain='$domain'";                                                                                
-	  execSQL($con, $sql);	
+      $sql="update $leadtable set plan_type='$plantype',validity_start_date='$licensestartdays',validity_end_date=$licenseenddays,total_email_credits='$totalemailcount',used_email_credits='$actualemailcount',available_email_credits='$availemailcredits',total_contacts_credits='$totalrecordcount',used_contacts_credits='$actualrecordcount',available_contacts_credit='$availcontactcredits',status='$appstatus',bounce='$bounce',last_activity='$action',last_activity_in_app=$dateadded where email='$email' and domain='$domain'";
+      execSQL($con, $sql);
 	  displaySynclog("Updated:SuccessFully");
       }  
     }
