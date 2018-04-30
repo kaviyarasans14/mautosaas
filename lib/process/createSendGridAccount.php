@@ -90,7 +90,7 @@ function updateEventnotificationURL($subusername,$url){
     //$data_array['processed']=true;
     //$data_array['open']=true;
     //$data_array['click']=true;
-    //$data_array['dropped']=true;
+    $data_array['dropped']=true;
 
     $payload = json_encode($data_array);
     $ch = curl_init('https://api.sendgrid.com/v3/user/webhooks/event/settings');
@@ -116,10 +116,74 @@ function updateEventnotificationURL($subusername,$url){
     }
 }
 
+function updateForwardBounce ($subusername) {
+    $data_array['enabled']=true;
+    $data_array['email']="";
+    $payload = json_encode($data_array);
+
+    $ch = curl_init('https://api.sendgrid.com/v3/mail_settings/forward_bounce');
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_POSTFIELDS,$payload);
+    curl_setopt($ch, CURLOPT_ENCODING,"");
+    curl_setopt($ch, CURLOPT_HEADER, false);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Content-Type: application/json',
+        "Authorization: Bearer ".SEND_GRID_API,
+        'On-behalf-of: '.$subusername));
+
+    $result = curl_exec($ch);
+    $result = json_decode($result,true);
+
+   if(isset($result['enabled']) && $result['enabled']){
+        displaysignuplog("SendGrid Forward Bounce updated Success");
+        return true;
+    }else{
+        displaysignuplog("SendGrid  Forward Bounce updated Failed:".$result['error']);
+        return false;
+    }
+}
+
+function updateForwardSpam ($subusername) {
+    $data_array['enabled']=true;
+    $data_array['email']='support@leadsengage.com';
+    $payload = json_encode($data_array);
+
+    $ch = curl_init('https://api.sendgrid.com/v3/mail_settings/forward_spam');
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_POSTFIELDS,$payload);
+    curl_setopt($ch, CURLOPT_ENCODING,"");
+    curl_setopt($ch, CURLOPT_HEADER, false);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Content-Type: application/json',
+        "Authorization: Bearer ".SEND_GRID_API,
+        'On-behalf-of: '.$subusername));
+
+    $result = curl_exec($ch);
+    $result = json_decode($result,true);
+
+    if(isset($result['enabled']) && $result['enabled']){
+        displaysignuplog("SendGrid Forward Spam updated Success");
+        return true;
+    }else{
+        displaysignuplog("SendGrid  Forward Spam updated Failed:".$result['error']);
+        return false;
+    }
+}
+
 function updateWhiteLabelDomain($subusername){
     $data_array['username']=$subusername;
     $payload = json_encode($data_array);
-    $ch = curl_init('https://api.sendgrid.com/v3/whitelabel/domains/1834397/subuser');
+    $ch = curl_init('https://api.sendgrid.com/v3/whitelabel/domains/1897578/subuser');
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -145,7 +209,7 @@ function updateWhiteLabelDomain($subusername){
 function updateWhiteLabelLink($subusername){
     $data_array['username']=$subusername;
     $payload = json_encode($data_array);
-    $ch = curl_init('https://api.sendgrid.com/v3/whitelabel/links/903177/subuser');
+    $ch = curl_init('https://api.sendgrid.com/v3/whitelabel/links/905238/subuser');
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);

@@ -143,9 +143,9 @@ try{
 
                 if(DBINFO::$SIGNUP_ELASTIC) {
                     $status = createSubAccount(
-                        "$domain@leadsengage.net", "LeadsEngage@44#");
+                        "$domain@lemailer2.com", "LeadsEngage@44#");
                     if ($status[1] == "") {
-                        $elasticuser = "$domain@leadsengage.net";
+                        $elasticuser = "$domain@lemailer2.com";
                         $elasticpwd = $status[0];
                         $isupdated = updateHTTPNotification($status[0], "http://$domain." . MAUTIC_DOMAIN . "/mailer/elasticemail/callback");
                         if (!$isupdated) {
@@ -163,7 +163,7 @@ try{
                         $response['alert'] = "Elastic Sub Account Creation Failed:" . $status[1];
                     }
                 } else {
-                    $elasticuser = "$domain@leadsengage.net";
+                    $elasticuser = "$domain@lemailer1.com";
                     $transport = "mautic.transport.sendgrid_api";
                     $status = createSubuser($elasticuser,$frommail,"LeadsEngage@44#");
                     if($status){
@@ -173,6 +173,8 @@ try{
                             if($isupdated){
                                 updateWhiteLabelDomain($elasticuser);
                                 updateWhiteLabelLink($elasticuser);
+                                updateForwardBounce($elasticuser);
+                                updateForwardSpam($elasticuser);
                             } else {
                                 if ($response['alert'] != "") {
                                     $response['alert'] .= "Sub Account Profile Not Updated.Do Manually.";
@@ -324,6 +326,8 @@ function updateLicenseInfo($con, $appid, $dbname){
     $editionindex = DBINFO::$DEFAULT_EDITIONINDEX;
     $licensehistorytable=DBINFO::$APPDBNAME.".licensehistory";
     $licenseinfotable = $dbname.".licenseinfo";
+    $emailProvider =  DBINFO::$SIGNUP_ELASTIC ? 'Elastic Email' : 'Sendgrid - API';
+
     $sql = "select featureset from editiontable where editionindex = '$editionindex'";
     displaysignuplog("Edition SQL:".$sql);
     $dbrow = getResultArray ( $con, $sql );
@@ -337,7 +341,7 @@ function updateLicenseInfo($con, $appid, $dbname){
     displaysignuplog("Select Feature SQL:".$sql);
     $dbrow = getResultArray ( $con, $sql );
     $licenseinfoval = "";
-    $sql = "insert into $licenseinfotable values (1,'0','0','0','0','0','0','0','$currentdate','','UL','0','0','0','Active','$emailvalidity','Elastic Email');";
+    $sql = "insert into $licenseinfotable values (1,'0','0','0','0','0','0','0','$currentdate','','UL','0','0','0','Active','$emailvalidity','$emailProvider');";
     displaysignuplog("Insert  LicenseInfo SQL:".$sql);
     $result = execSQL ( $con, $sql );
     for($i = 0; $i < sizeof($dbrow); $i++){
