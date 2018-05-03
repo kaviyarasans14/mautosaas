@@ -129,8 +129,8 @@ try{
             updateLicenseInfo($con, $appid,$dbname);
             displaysignuplog("DB Name:".$dbname);
             if(DBINFO::$SIGNUP_ELASTIC) {
-                $elasticuser = "qc@leadsengage.net";
-                $elasticpwd = "986d3ea1-db10-4795-9add-cc9301792dfb";
+                $elasticuser = "";
+                $elasticpwd = "";
                 $transport = "mautic.transport.elasticemail";
                 $apikey = "";
             } else {
