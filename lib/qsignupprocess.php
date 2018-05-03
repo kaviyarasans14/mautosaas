@@ -143,7 +143,7 @@ try{
 
                 if(DBINFO::$SIGNUP_ELASTIC) {
                     $status = createSubAccount(
-                        "$domain@lemailer2.com", "");
+                        "$domain@lemailer2.com", "<ELASTIC_PASSWORD>");
                     if ($status[1] == "") {
                         $elasticuser = "$domain@lemailer2.com";
                         $elasticpwd = $status[0];
@@ -165,7 +165,7 @@ try{
                 } else {
                     $elasticuser = "$domain@lemailer1.com";
                     $transport = "mautic.transport.sendgrid_api";
-                    $status = createSubuser($elasticuser,$frommail,"");
+                    $status = createSubuser($elasticuser,$frommail,"<SENDGRID_PASSWORD>");
                     if($status){
                         $apikey = createAPI($elasticuser);
                         if($apikey != ""){
