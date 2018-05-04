@@ -12,7 +12,7 @@ class DBINFO {
 	public static $IS_AWS_SERVER = FALSE;
 	public static $PORT = '3306';
 	public static $LICENSEAPPID = 'cops';
-	public static $SIGNUP_DBNAME = 'mauto_base';
+	public static $SIGNUP_DBNAME = 'leadsengage_signup';
 	public static $SIGNUP_SEGMENTNAME = 'signupcontacts';
 	public static $DEFAULT_CREATEDBY_ID = '17';
 	public static $DEFAULT_CREATEDBY_NAME = 'Kaviarasan S';

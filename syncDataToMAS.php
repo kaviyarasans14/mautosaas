@@ -78,6 +78,16 @@ try {
 	if(sizeof($result) > 0 ){
 		$plantype=$result[0][0];
 	}
+
+    $sql="select amount,createdOn from  ".$appdbname.".paymenthistory  order by createdOn desc limit 1";
+    $result = getResultArray($con, $sql);
+    $amount='';
+    $paymentdate='';
+
+     if(sizeof($result) > 0 ){
+         $amount=$result[0][0];
+         $paymentdate=$result[0][1];
+     }
 	
 	$sql = "select * FROM ".$appdbname.".licenseinfo";
 	$licenseinfo = getResultArray($con, $sql);
@@ -112,7 +122,7 @@ try {
       $dateadded=     empty($dateadded) ? "NULL" :"'".$dateadded."'";
 
 	  $leadtable = DBINFO::$SIGNUP_DBNAME.".leads";
-      $sql="update $leadtable set plan_type='$plantype',validity_start_date='$licensestartdays',validity_end_date=$licenseenddays,total_email_credits='$totalemailcount',used_email_credits='$actualemailcount',available_email_credits='$availemailcredits',total_contacts_credits='$totalrecordcount',used_contacts_credits='$actualrecordcount',available_contacts_credit='$availcontactcredits',status='$appstatus',bounce='$bounce',last_activity='$action',last_activity_in_app=$dateadded where email='$email' and domain='$domain'";
+      $sql="update $leadtable set plan_type='$plantype',validity_start_date='$licensestartdays',validity_end_date=$licenseenddays,total_email_credits='$totalemailcount',used_email_credits='$actualemailcount',available_email_credits='$availemailcredits',total_contacts_credits='$totalrecordcount',used_contacts_credits='$actualrecordcount',available_contacts_credit='$availcontactcredits',status='$appstatus',bounce='$bounce',last_activity='$action',amount='$amount',payment_date='$paymentdate',last_activity_in_app=$dateadded where email='$email' and domain='$domain'";
       execSQL($con, $sql);
 	  displaySynclog("Updated:SuccessFully");
       }  

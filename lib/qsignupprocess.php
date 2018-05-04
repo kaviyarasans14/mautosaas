@@ -6,6 +6,7 @@ include("process/field.php");
 include("util.php");
 include("process/createElasticEmailSubAccount.php");
 include("process/createSendGridAccount.php");
+include("smtpmaillip.php");
 
 define('MAUTIC_ROOT_DIR', "/var/www/mauto");
 define('MAUTIC_DOMAIN', "localhost/mauto");
@@ -70,7 +71,17 @@ try{
         $isavailable=checkEmailAvailability($con,$email);
         if($isavailable){
             die("emailnotexists");
-        }else{
+        }else {
+            die("emailexist");
+        }
+    } else if(isset($_REQUEST['checkforgotemailavailability'])) {
+        $email=$_REQUEST['checkforgotemailavailability'];
+        $email = strtolower($email);
+        $isavailable=checkEmailAvailability($con,$email);
+        if($isavailable){
+            die("emailnotexists");
+        }else {
+            $sendmail = sendForgotDomainMail($email,$con);
             die("emailexist");
         }
     } else {
@@ -213,6 +224,53 @@ try{
     $msg = $ex->getMessage ();
     displaysignuplog("Exception Occur:".$msg);
 }
+
+function sendForgotDomainMail($email,$con){
+    $domain = getDomain($email,$con);
+    $content =getForgotDomainContent($domain);
+    $subject = "Your Leadsengage Portal Information";
+    $emailids = array();
+    $emailids[]=$email;
+    $reason = smtpmail ( $emailids, $subject, $content, "", [], false, "", "" );
+
+}
+
+function getForgotDomainContent($domain) {
+    $content ="<div style=\"font-family:Helvetica Neue,Helvetica,Arial,sans-serif;font-size:13px\"><div class=\"adM\">
+	</div><div>Hi,</div>
+
+<div>
+	<p>We just received a request to locate any Leadsengage accounts associated with this email address.</p>
+	<p>Here is a list of accounts where you are an agent. You can click on any of the links below to access your support portal</p>
+</div>
+
+<ul>
+		<li><a href=\"http://$domain.leadsengage.com\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?hl=en&amp;q=http://$domain.leadsengage.com&amp;source=gmail&amp;ust=1525438903489000&amp;usg=AFQjCNH05Ddf69ly6ktv-4GYs2fY9rUgOA\">$domain.leadsengage.com</a></li>
+</ul>
+
+<div>
+	<p>In case you have forgotten the login credentials for your account, you can click on the forgot password link to reset your password. </p>
+</div>
+
+<div>
+Regards,<br>
+Leadsengage Team
+</div><div class=\"yj6qo\"></div><div class=\"adL\">
+
+
+</div></div>";
+    return $content;
+}
+
+function getDomain($email,$con) {
+    $sql="select f5 from applicationlist where f4='$email';";
+    $dbrow = getResultArray ( $con, $sql );
+    $domain = '';
+    if(sizeof($dbrow) != 0){
+        return $domain = $dbrow[0][0];
+    }
+}
+
 function checkDomainCpanel($con,$domain){
     $sql="select appid from applicationlist where f5='$domain';";
     displaysignuplog("CPanel Domain Validation SQL:".$sql);
