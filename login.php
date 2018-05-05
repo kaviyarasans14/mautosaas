@@ -115,7 +115,7 @@ function isMobile() {
   <button id="forgot-domains" type="submit" class="btn btnproceed" >Proceed</button>
   </div>
 </form>
-  <a href="javascript:proceedButtonClicked();" id="forgot-domain" style="font-size: 1.125rem;display: block;text-align: -webkit-center;">Forgot your leadsengage domain? </a>
+  <a href="javascript:proceedButtonClicked();" id="forgot-domain" style="font-size: 1.125rem;display: block;text-align: center;">Forgot your leadsengage domain? </a>
   <form class="emailchecker" name="emailchecker"  action="#" onsubmit='return getDomainName();' method="POST" >
       <div class='loginpanel-forgot-domain' id="loginpanel-forgot-domain" style="display:none"; >
           <span id='error-email'></span>
@@ -129,7 +129,7 @@ function isMobile() {
       <div class="verified-check">
           <svg viewBox="0 0 512 512"><path fill="currentColor" d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path></svg>
       </div>
-      <p style="width: 350px;">We’ve sent you an email with your associated Leadsengage account(s)</p>
+      <p style="width: 100%;text-align: center;">We’ve sent you an email with your associated Leadsengage account(s)</p>
   </div>
 
     <!-- Optional JavaScript -->
