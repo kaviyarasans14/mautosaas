@@ -426,7 +426,7 @@ function updateLicenseInfo($con, $appid, $dbname){
     displaysignuplog("Select Feature SQL:".$sql);
     $dbrow = getResultArray ( $con, $sql );
     $licenseinfoval = "";
-    $sql = "insert into $licenseinfotable values (1,'0','0','0','0','0','0','0','$currentdate','','UL','0','0','0','Active','$emailvalidity','$emailProvider');";
+    $sql = "insert into $licenseinfotable values (1,'0','0','0','0','0','0','0','$currentdate','','UL','0','0','0','Active','$emailvalidity','$emailProvider','0','');";
     displaysignuplog("Insert  LicenseInfo SQL:".$sql);
     $result = execSQL ( $con, $sql );
     for($i = 0; $i < sizeof($dbrow); $i++){
