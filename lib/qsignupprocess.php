@@ -225,14 +225,41 @@ try{
     displaysignuplog("Exception Occur:".$msg);
 }
 
-function sendForgotDomainMail($email,$con){
+function sendForgotDomainMail($email,$con) {
     $domain = getDomain($email,$con);
-    $content =getForgotDomainContent($domain);
+    $bodyContent =getForgotDomainContent($domain);
+    $content = alterElasticEmailBodyContent($bodyContent);
     $subject = "Your Leadsengage Portal Information";
     $emailids = array();
     $emailids[]=$email;
     $reason = smtpmail ( $emailids, $subject, $content, "", [], false, "", "" );
 
+}
+
+function alterElasticEmailBodyContent($bodyContent) {
+        $doc                      = new \DOMDocument();
+        $doc->strictErrorChecking = false;
+        libxml_use_internal_errors(true);
+        $doc->loadHTML('<?xml encoding="UTF-8">'.$bodyContent);
+        // Get body tag.
+        $body = $doc->getElementsByTagName('body');
+        if ($body and $body->length > 0) {
+            $body = $body->item(0);
+            //create the div element to append to body element
+            $divelement = $doc->createElement('div');
+            $ptag1      = $doc->createElement('span', '{unsubscribe}');
+            $ptag1->setAttribute('style', 'display:none;');
+            $divelement->appendChild($ptag1);
+            $ptag2 = $doc->createElement('span', '{accountaddress}');
+            $ptag2->setAttribute('style', 'display:none;');
+            $divelement->appendChild($ptag2);
+            //actually append the element
+            $body->appendChild($divelement);
+            $bodyContent = $doc->saveHTML();
+        }
+        libxml_clear_errors();
+
+        return $bodyContent;
 }
 
 function getForgotDomainContent($domain) {
