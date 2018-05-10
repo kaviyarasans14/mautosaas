@@ -21,7 +21,7 @@ class DBINFO {
 	public static $SIGNUP_URL = "http://localhost/mauto/index.php";
 	public static $ACTIONVATION_LINK = "http://localhost/mautosaas/lib/activation.php";
 	public static $LEAD_STATUS = "Signup";
-	public static $LEAD_STAGE = "Trial";
+	public static $LEAD_STAGE = "Trial- Initiated";
 	public static $EMAIL_VALIDITY="7";
     public static $SIGNUP_SUCCESS="http://test.leadsengage.com";
     public static $SIGNUP_ELASTIC = false;
