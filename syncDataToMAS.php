@@ -74,7 +74,14 @@ try {
                 if(sizeof($result) > 0 ){
                     $plantype=$result[0][0];
                 }
-
+                $sql = "select website,timezone from ".$appdbname.".accountinfo";
+                $userresult = getResultArray($con, $sql);
+                $website='';
+                $timezone='';
+                if(sizeof($userresult) > 0 ){
+                    $website=$userresult[0][0];
+                    $timezone=$userresult[0][1];
+                }
                 $last15dayscontactcreated = getLast15DaysContactsCreated($con,$appid);
                 $last15daysmailsent=getLast15DaysEmailSent($con,$appid);
                 $sql = "select * FROM ".$appdbname.".licenseinfo";
@@ -84,7 +91,7 @@ try {
                 $dateadded=     empty($dateadded) ? "NULL" :"'".$dateadded."'";
 
                 $leadtable = DBINFO::$SIGNUP_DBNAME.".leads";
-                $sql="update $leadtable set app_id='$appid',domain='$domain',plan_type='$plantype',contact_used='$actualrecordcount',last_15_days_contact_crea='$last15dayscontactcreated',last_15_days_email_send='$last15daysmailsent',last_activity_in_app=$dateadded where email='$email' and domain='$domain'";
+                $sql="update $leadtable set app_id='$appid',domain='$domain',plan_type='$plantype',contact_used='$actualrecordcount',last_15_days_contact_crea='$last15dayscontactcreated',last_15_days_email_send='$last15daysmailsent',last_activity_in_app=$dateadded,timezone1='$timezone',website1='$website' where email='$email' and domain='$domain'";
                 execSQL($con, $sql);
                 displaySynclog("Updated:SuccessFully".$sql);
             }

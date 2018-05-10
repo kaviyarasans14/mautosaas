@@ -618,12 +618,14 @@ function createMauticConfigFile($domain,$dbname,$fromname,$frommail,$elastic_use
 	),
 	\'default_timezone\' => \'Asia/Kolkata\',
 	\'locale\' => \'en_US\',
-	\'email_frequency_number\' => 3,
-	\'email_frequency_time\' => \'DAY\',
+	\'email_frequency_number\' => 10,
+	\'email_frequency_time\' => \'MONTH\',
 	\'mailer_is_owner\' => 0,
 	\'background_import_if_more_rows_than\' => 5000,
 	\'footer_text\' => \'To make sure you keep getting these emails in your INBOX, please add {from_email} to your address book or whitelist us.<br />Want out of the loop? {unsubscribe_link}<br /><br />Our Postal Address: {postal_address}\',
 	\'mailer_api_key\' => \''.$apikey.'\',
+	\'track_contact_by_ip\' => true,
+	\'track_by_fingerprint\' => true,
 	);
 	?>';
     $configpath=MAUTIC_ROOT_DIR."/app/config/".$domain;
