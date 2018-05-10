@@ -8,6 +8,34 @@ include("smtpmaillip.php");
 
 define('MAUTIC_DOMAIN', "localhost/mauto");
 
+function displaysignuplog($msg) {
+    $logdir="../log/";
+    if (!is_dir($logdir)) {
+        $old = umask(0);
+        mkdir($logdir, 0777, true);
+        umask($old);
+    }
+    $logfile = "$logdir/qsignup.log";
+    $baseurl = "localhost";
+    $remoteaddr = "localhost";
+    if (isset($_SERVER['REQUEST_URI'])) {
+        $baseurl = $_SERVER['REQUEST_URI'];
+        $remoteaddr = $_SERVER['REMOTE_ADDR'];
+    }
+    $logfilesize = getLogFileSize($logfile);
+    if ($logfilesize > LOGINFO::$DEFAULT_FILE_SIZE) {
+        $filepath = $logfile;
+        createLogZipfile($logdir, "qsignup.log");
+        if (file_exists($filepath)) {
+            $old = umask(0);
+            unlink($filepath);
+            umask($old);
+        }
+    }
+    $currenttime = date("Y-m-d H:i:s");
+    error_log($remoteaddr . " : " . $currenttime . " : $msg\n", 3, $logfile);
+
+}
 $companyname=$_REQUEST['companyname'];
 $firstname=$_REQUEST['firstname'];
 $lastname=$_REQUEST['lastname'];
@@ -60,10 +88,10 @@ function insertInLeadsengage($firstname,$lastname,$companyname,$frommail, $pwd,$
 	$sql="select email,domain from $leadtable where email='$frommail' and (domain IS NULL OR domain = '');";
 	$dbrow = getResultArray ( $con, $sql );
 	if(sizeof($dbrow) > 0){
-	   $sql = "update $leadtable set firstname='$firstname',lastname='$lastname',company_new='$companyname',email='$frommail',mobile='$usermobile',domain='$domain',password='$pwd',created_by='$userid',created_by_user='$username',is_published='1',owner_id='$userid',date_identified='$dateidentified',date_added='$dateidentified',lead_status='$leadstatus',lead_stage='$leadstage' where email='$frommail'";
+	   $sql = "update $leadtable set firstname='$firstname',lastname='$lastname',company_new='$companyname',email='$frommail',mobile='$usermobile',domain='$domain',password='$pwd',created_by='$userid',created_by_user='$username',is_published='1',owner_id='$userid',date_identified='$dateidentified',date_added='$dateidentified',lead_stage='$leadstage' where email='$frommail'";
 	   execSQL($con, $sql);	
 	} else {
-	  $isql = "insert into $leadtable (firstname,lastname,company_new,email,mobile,domain,password,created_by,created_by_user,is_published,owner_id,date_identified,date_added,lead_status,lead_stage) values ('$firstname','$lastname','$companyname','$frommail','$usermobile','$domain','$pwd','$userid','$username',1,'$userid','$dateidentified','$dateidentified','$leadstatus','$leadstage')";
+	   $isql = "insert into $leadtable (firstname,lastname,company_new,email,mobile,domain,password,created_by,created_by_user,is_published,owner_id,date_identified,date_added,lead_stage) values ('$firstname','$lastname','$companyname','$frommail','$usermobile','$domain','$pwd','$userid','$username',1,'$userid','$dateidentified','$dateidentified','$leadstage')";
 	   execSQL($con, $isql);	
 	}
 	

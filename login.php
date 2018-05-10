@@ -103,7 +103,7 @@ function isMobile() {
     }
      </style>
   </head>
-  <body>
+  <body style="background: transparent;">
   <form  id="domainchecker" name="domainchecker"  action="#"
   onsubmit='return domainurlfetcher();' method="POST" >
   <div class='loginpanel' id="loginpanel">
@@ -115,7 +115,7 @@ function isMobile() {
   <button id="forgot-domains" type="submit" class="btn btnproceed" >Proceed</button>
   </div>
 </form>
-  <a href="javascript:proceedButtonClicked();" id="forgot-domain" style="font-size: 1.125rem;display: block;text-align: center;">Forgot your leadsengage domain? </a>
+  <a href="javascript:proceedButtonClicked();" id="forgot-domain" style="font-size: 1.125rem;display: block;text-align: center;">Forgot Domain? </a>
   <form class="emailchecker" name="emailchecker"  action="#" onsubmit='return getDomainName();' method="POST" >
       <div class='loginpanel-forgot-domain' id="loginpanel-forgot-domain" style="display:none"; >
           <span id='error-email'></span>
@@ -178,7 +178,7 @@ function isMobile() {
 
                                     document.getElementById("domain").style.borderColor = "red";
                                     document.getElementById('error').style.display = "block";
-                                    document.getElementById('error').innerHTML = "Given domain name is not registered with us!"; 
+                                    document.getElementById('error').innerHTML = "Domain "+"("+domain+")"+" doesn't exist";
                                 }else{
                                     var url="https://"+domain+".cratio.in/index.php";
                                     window.open(url,"_blank")

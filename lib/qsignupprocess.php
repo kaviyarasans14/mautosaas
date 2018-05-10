@@ -134,7 +134,7 @@ try{
             if(sizeof($dbrow) > 0){
                 $version = $dbrow[0][0];
             }
-            $sql="insert into applicationlist(appid,f5,f2,f3,f4,f11,f17,f18,f19,f20,f21,f26,f27,f28,f6,createdtimeat) values('$appid','$domain','$companyname','$fromname','$frommail','$usermobile','1','1','1','1','1','0','0','0','$version','$currentdatetime');";
+            $sql="insert into applicationlist(appid,f5,f2,f3,f4,f11,f17,f18,f19,f20,f21,f26,f27,f28,f6,createdtimeat,f7,f14,f15,f16) values('$appid','$domain','$companyname','$fromname','$frommail','$usermobile','1','1','1','1','1','0','0','0','$version','$currentdatetime','Active','','','');";
             displaysignuplog("SQL:".$sql);
             $result = execSQL ( $con, $sql );
             updateLicenseInfo($con, $appid,$dbname);
@@ -208,6 +208,7 @@ try{
             createMauticFirstUser($con,$dbname,$frommail,$firstname,$lastname,$pwd);
             commitTransaction($con);
             $url="http://$domain.".MAUTIC_DOMAIN."/index.php";
+            updateAPIdetails($domain,$frommail,$con);
             if(!isset($_REQUEST['signupmode'])){
                 die("url=".$url);
 		    } else {
@@ -224,12 +225,26 @@ try{
     $msg = $ex->getMessage ();
     displaysignuplog("Exception Occur:".$msg);
 }
-
+function updateAPIdetails($domain,$email,$con) {
+    require_once MAUTIC_ROOT_DIR."/app/config/$domain/local.php";
+    $provider = $parameters['mailer_transport'];
+    $apikey='';
+    $username='';
+    if (strpos($provider, 'sendgrid') !== false) {
+        $apikey   = $parameters['mailer_api_key'];
+        $username = $parameters['mailer_user'];
+    } else {
+        $username   = $parameters['mailer_user'];
+        $apikey     = $parameters['mailer_password'];
+    }
+    $sql="update applicationlist set f14='$apikey',f15='$username',f16='$provider'where f4='$email' and f5='$domain'";
+    execSQL($con, $sql);
+}
 function sendForgotDomainMail($email,$con) {
     $domain = getDomain($email,$con);
     $bodyContent =getForgotDomainContent($domain);
     $content = alterElasticEmailBodyContent($bodyContent);
-    $subject = "Your Leadsengage Portal Information";
+    $subject = "LeadsEngage Account - Forgot Domain";
     $emailids = array();
     $emailids[]=$email;
     $reason = smtpmail ( $emailids, $subject, $content, "", [], false, "", "" );
@@ -263,29 +278,36 @@ function alterElasticEmailBodyContent($bodyContent) {
 }
 
 function getForgotDomainContent($domain) {
-    $content ="<div style=\"font-family:Helvetica Neue,Helvetica,Arial,sans-serif;font-size:13px\"><div class=\"adM\">
-	</div><div>Hi,</div>
 
-<div>
-	<p>We just received a request to locate any Leadsengage accounts associated with this email address.</p>
-	<p>Here is a list of accounts where you are an agent. You can click on any of the links below to access your support portal</p>
-</div>
-
-<ul>
-		<li><a href=\"http://$domain.leadsengage.com\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?hl=en&amp;q=http://$domain.leadsengage.com&amp;source=gmail&amp;ust=1525438903489000&amp;usg=AFQjCNH05Ddf69ly6ktv-4GYs2fY9rUgOA\">$domain.leadsengage.com</a></li>
-</ul>
-
-<div>
-	<p>In case you have forgotten the login credentials for your account, you can click on the forgot password link to reset your password. </p>
-</div>
-
-<div>
-Regards,<br>
-Leadsengage Team
-</div><div class=\"yj6qo\"></div><div class=\"adL\">
-
-
-</div></div>";
+    $content = "<html>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+ <head>
+ <title></title>
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css'>
+ </head>
+<body aria-disabled='false' style='min-height: 300px;margin:0px;'>
+<div style='background-color:#eff2f7'>
+<div style='padding-top: 55px;'>
+	<div class='marle' style='margin: 0% 11.5%;background-color:#fff;padding: 50px 50px 50px 50px;border-bottom:5px solid #0071ff;'>
+ <p style='text-align:center;'><img src='https://s3.amazonaws.com/leadsroll.com/home/leadsengage_logo-black.png' class='fr-fic fr-dii' height='40'></p>
+	<br>
+<div style='text-align:center;width:100%;'>
+<div style='display:inline-block;width: 80%;'>
+    <p style='text-align:left;font-size:14px;font-family: Montserrat,sans-serif;'>Hi,</p>
+    <p style='text-align:left;font-size:14px;line-height: 30px;font-family: Montserrat,sans-serif;'>This email is in your inbox because you requested for forgot domain. </p>
+    <p style='text-align:left;font-size:14px;line-height: 30px;font-family: Montserrat,sans-serif;'>Here is a list of accounts where you are an agent. You can click on any of the links below to access your account .</p>
+    <a style='font-weight:bold;font-size:15px;'href=\"http://$domain.leadsengage.com\" target=\"_blank\" data-saferedirecturl=\"https://www.google.com/url?hl=en&amp;q=http://$domain.leadsengage.com&amp;source=gmail&amp;ust=1525438903489000&amp;usg=AFQjCNH05Ddf69ly6ktv-4GYs2fY9rUgOA\">$domain.leadsengage.com</a>
+    <p style='text-align:left;font-size:14px;line-height: 30px;font-family: Montserrat,sans-serif;' >If you did not request a forgot domain please send a mail to support@leadsengage.com </p ><br >
+    <p style='text-align:left;font-size:14px;font-family: Montserrat,sans-serif;' > Thanks,<br > LeadsEngage Support </p ></div >
+     </div >
+   </div >
+<br >
+<br >
+<br >
+</div >
+</div >
+</body >
+</html >";
     return $content;
 }
 
