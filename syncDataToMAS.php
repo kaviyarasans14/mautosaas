@@ -71,8 +71,10 @@ try {
                 $sql="select planname from  ".$appdbname.".paymenthistory where paymentstatus='Paid' order by createdOn desc limit 1";
                 $result = getResultArray($con, $sql);
                 $plantype="";
+                $leadstage='Trail - Inititated';
                 if(sizeof($result) > 0 ){
                     $plantype=$result[0][0];
+                    $leadstage= 'Paid -Active';
                 }
                 $sql = "select website,timezone from ".$appdbname.".accountinfo";
                 $userresult = getResultArray($con, $sql);
@@ -91,7 +93,7 @@ try {
                 $dateadded=     empty($dateadded) ? "NULL" :"'".$dateadded."'";
 
                 $leadtable = DBINFO::$SIGNUP_DBNAME.".leads";
-                $sql="update $leadtable set app_id='$appid',domain='$domain',plan_type='$plantype',contact_used='$actualrecordcount',last_15_days_contact_crea='$last15dayscontactcreated',last_15_days_email_send='$last15daysmailsent',last_activity_in_app=$dateadded,timezone1='$timezone',website1='$website' where email='$email' and domain='$domain'";
+                $sql="update $leadtable set app_id='$appid',domain='$domain',plan_type='$plantype',contact_used='$actualrecordcount',last_15_days_contact_crea='$last15dayscontactcreated',last_15_days_email_send='$last15daysmailsent',last_activity_in_app=$dateadded,timezone1='$timezone',website1='$website',lead_stage='$leadstage' where email='$email' and domain='$domain'";
                 execSQL($con, $sql);
                 displaySynclog("Updated:SuccessFully".$sql);
             }
