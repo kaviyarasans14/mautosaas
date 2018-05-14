@@ -134,7 +134,7 @@ try{
             if(sizeof($dbrow) > 0){
                 $version = $dbrow[0][0];
             }
-            $sql="insert into applicationlist(appid,f5,f2,f3,f4,f11,f17,f18,f19,f20,f21,f26,f27,f28,f6,createdtimeat,f7,f14,f15,f16) values('$appid','$domain','$companyname','$fromname','$frommail','$usermobile','1','1','1','1','1','0','0','0','$version','$currentdatetime','Active','','','');";
+            $sql="insert into applicationlist(appid,f5,f2,f3,f4,f11,f17,f18,f19,f20,f21,f26,f27,f28,f6,createdtimeat,f7,f14,f15,f16,f29) values('$appid','$domain','$companyname','$fromname','$frommail','$usermobile','1','1','1','1','1','0','0','0','$version','$currentdatetime','Active','','','','1');";
             displaysignuplog("SQL:".$sql);
             $result = execSQL ( $con, $sql );
             updateLicenseInfo($con, $appid,$dbname);
