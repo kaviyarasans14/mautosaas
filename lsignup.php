@@ -49,7 +49,7 @@ $cssfile = 'css/apps.css';
 <form name="signup" autocomplete="off"  onsubmit="return validateForm();" method='POST' class="form-field-container fdesk-signupform" data-redirect="/signup/thank-you" data-redirect-spam="/signup/success" novalidate="novalidate">
   <b id="error"></b>
 <fieldset id= "signup_fieldset">
-  <div class="name-field-wrapper">
+  <div class="name-field-wrapper" style="display:none;">
     <div class="name-field">
       <div class="form-field">
 	<i class="icon-user"></i>
@@ -69,7 +69,7 @@ $cssfile = 'css/apps.css';
 <p id="lastname-error-wrapper" style="display:none;" class="signup_Error"></p>
 </div>
 
-<div class="form-field">
+<div class="form-field" style="display:none;">
   <i class="icon-office"></i>
   <input type="text" name="companyname" class="company-form" required="true"/>
   <label class="form-placeholder">Company*</label>
@@ -96,7 +96,7 @@ $cssfile = 'css/apps.css';
   <label class="form-placeholder">Domain*</label>
 </div>
 <p id="userdomain-error-wrapper" style="display:none;" class="signup_Error"></p>
-<div class="form-field">
+<div class="form-field" style="display:none;">
   <i class="icon-phone"></i>
   <input type="text" name="mobilenum" class="phone-form" required="true">
   <label class="form-placeholder">Phone No*</label>

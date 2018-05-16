@@ -59,12 +59,12 @@ function validateForm() {
 	var mobilenoerror = document.getElementById("mobilenum-error-wrapper");
 	var passworderror = document.getElementById("password-error-wrapper");
 	var userdomainerror = document.getElementById("userdomain-error-wrapper");
-    if (firstname == null || firstname == ''){
+    /*if (firstname == null || firstname == ''){
 		firstnameerror.style.display = "block";
 		firstnameerror.innerHTML = "Please Fill Your Name";
 		firstnamewidget.parentElement.className += " error";
 		isvalidform = false;
-	} 
+	} */
     //if (lastname == null || lastname == ''){
 		//lastnameerror.style.display = "block";
 		//lastnameerror.innerHTML = "Please Fill Your Last Name";
@@ -72,12 +72,12 @@ function validateForm() {
 		//isvalidform = false;
 	//}
 
-	if (cname == null || cname == '') {
+	/*if (cname == null || cname == '') {
 		cnameerror.style.display = "block";
 		cnameerror.innerHTML = "Please Fill Your Company";
 		cnamewidget.parentElement.className += " error";
 		isvalidform = false;
-	}          
+	}*/
 				              
 	if (!validateEmail(emailid)) {   
 		isvalidform = false;                   
@@ -97,7 +97,7 @@ function validateForm() {
 		passwordwidget.parentElement.className += " error";
 		isvalidform = false;
 	} 
-	if (mobileno == null || mobileno == '') {
+	/*if (mobileno == null || mobileno == '') {
 		mobilenoerror.style.display = "block";
 		mobilenoerror.innerHTML = "Please Fill Your Phone No";
 		mobilenowidget.parentElement.className += " error";
@@ -108,7 +108,7 @@ function validateForm() {
 		mobilenowidget.parentElement.className += " error";
 		    
 		isvalidform = false;
-	}
+	}*/
 	if(isvalidform){
 		document.cookie = "IsTrackingEnabled=true; path=/";
 		sendSignupMail(cname,firstname,lastname,emailid,domain,mobileno,password);
