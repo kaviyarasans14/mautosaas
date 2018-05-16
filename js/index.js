@@ -59,12 +59,12 @@ function validateForm() {
 	var mobilenoerror = document.getElementById("mobilenum-error-wrapper");
 	var passworderror = document.getElementById("password-error-wrapper");
 	var userdomainerror = document.getElementById("userdomain-error-wrapper");
-    /*if (firstname == null || firstname == ''){
+    if (firstname == null || firstname == ''){
 		firstnameerror.style.display = "block";
 		firstnameerror.innerHTML = "Please Fill Your Name";
 		firstnamewidget.parentElement.className += " error";
 		isvalidform = false;
-	} */
+	}
     //if (lastname == null || lastname == ''){
 		//lastnameerror.style.display = "block";
 		//lastnameerror.innerHTML = "Please Fill Your Last Name";
@@ -122,7 +122,7 @@ function validateEmail(emailid){
 	emailiderror.style.display = "none";
 	emailiderror.innerHTML = "";
 	emailidwidget.parentElement.className = "form-field";
-	var othersignup = 'Please enter your business email or <a target="_blank" href="https://leadsengage.com/signup-free-trial/" style="color:blue;">Request a demo</a>';
+	var othersignup = 'Please Enter Your Business Email For Direct Signup or <a target="_blank" href="https://leadsengage.com/signup-free-trial/" style="color:blue;">Contact Sales For Trial</a>';
 	var invalidemailsids = ["gmail", "yahoo", "hotmail", "live", "outlook", "rediffmail", "mail", "yandex","sify"];
 	var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 	var reg = /^([\w-\.]+@(?!gmail.com)(?!yahoo.com)(?!hotmail.com)(?!yahoo.co.in)(?!aol.com)(?!abc.com)(?!xyz.com)(?!pqr.com)(?!rediffmail.com)(?!live.com)(?!outlook.com)(?!me.com)(?!msn.com)(?!ymail.com)([\w-]+\.)+[\w-]{2,4})?$/;
