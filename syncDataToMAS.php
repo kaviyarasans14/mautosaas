@@ -74,7 +74,7 @@ try {
                 $leadstage='Trail - Inititated';
                 if(sizeof($result) > 0 ){
                     $plantype=$result[0][0];
-                    $leadstage= 'Paid -Active';
+                    $leadstage= 'Paid- Active';
                 }
                 $sql = "select website,timezone from ".$appdbname.".accountinfo";
                 $userresult = getResultArray($con, $sql);
