@@ -290,7 +290,7 @@ function sendSignupMail(cname,firstname,lastname,emailid,domain,mobileno,passwor
 				var leadid = res[2];
 				var trackinghash = res[3];
                 var signupsuccess = res[4];
-				var response = ct+";"+leadid+";"+trackinghash+";"+signupsuccess;
+				var response = ct+"^"+leadid+"^"+trackinghash+"^"+signupsuccess;
 	        	isvalidSignup = true;
             	document.cookie = "trackingct="+ct+"; path=/";
             //	window.location = "http://test.leadsengage.com";

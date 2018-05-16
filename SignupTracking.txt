@@ -2,7 +2,10 @@
 window.addEventListener('message', function(event) {
     try {
         var response = event.data;
-		response = response.split(";");
+        if(response.indexOf('^') == -1){
+             return;
+        }
+		response = response.split("^");
         var sessionid = response[2];
         var leadid = response[1];
         var ct = response[0];
