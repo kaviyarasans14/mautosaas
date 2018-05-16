@@ -75,7 +75,7 @@ $cssfile = 'css/apps.css';
   <i class="icon-sphere"></i>
   <input type="text" name="userdomain" onfocusout="checkDomainonKeyup(this.value)" class="helpdesk-form" id="domain" required="true">
   <label class="form-leadsengage-text">.leadsengage.com</label>
-  <label class="form-placeholder">Your Domain*</label>
+  <label class="form-placeholder">Domain Name*</label>
 </div>
 <span style="font-size:13px;display:block;margin-top:-8px;color:#8f8f8f;">This is where you and your users will login to your account</span>
 <p id="userdomain-error-wrapper" style="display:none;margin-top:-39px;" class="signup_Error"></p>
