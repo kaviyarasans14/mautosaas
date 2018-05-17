@@ -79,7 +79,7 @@ if(isMobile()){
   <label class="form-leadsengage-text">.leadsengage.com</label>
   <label class="form-placeholder">Domain Name*</label>
 </div>
-<span style="<?php echo $fontSize;?>;display:block;margin-top:-8px;color:#8f8f8f;">This is where you and your users will login to your account</span>
+<span style="<?php echo $fontSize;?>;display:block;margin-top:-8px;color:#ffffff;">This is where you and your users will login to your account</span>
 <p id="userdomain-error-wrapper" style="display:none;margin-top:-39px;" class="signup_Error"></p>
 <div class="form-field" style="display:none;">
   <i class="icon-phone"></i>
