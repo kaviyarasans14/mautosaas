@@ -9,9 +9,11 @@ function isMobile() {
     return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
 }
 $cssfile = 'css/apps.css';
-//if(isMobile()){
-//$cssfile = 'css/mobile.css';
-//}
+if(isMobile()){
+   $fontSize = 'font-size:11px';
+} else {
+   $fontSize = 'font-size:13px';
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -36,7 +38,7 @@ $cssfile = 'css/apps.css';
       <div class="form-field">
 	<i class="icon-user"></i>
 	<input type="text" name="firstname" class="name-first_name" id="name-first_name" required="true"/>
-<label class="form-placeholder" id = "form-placeholder-first-name">Name*</label>
+<label class="form-placeholder" id = "form-placeholder-first-name">Your Name*</label>
 
 </div>
 <p id="firstname-error-wrapper" style="display:none;" class="signup_Error"></p>
@@ -68,7 +70,7 @@ $cssfile = 'css/apps.css';
 <div class="form-field">
   <i class="icon-key"></i>
   <input type="password" id="password" name="password" class="password-form" required="true"/>
-  <label class="form-placeholder">Password (Minimum 6 Characters)*</label>
+  <label class="form-placeholder">Password (6 Characters)*</label>
 </div>
 <p id="password-error-wrapper" style="display:none;" class="signup_Error"></p>
 <div class="form-field form-field-domain">
@@ -77,7 +79,7 @@ $cssfile = 'css/apps.css';
   <label class="form-leadsengage-text">.leadsengage.com</label>
   <label class="form-placeholder">Domain Name*</label>
 </div>
-<span style="font-size:13px;display:block;margin-top:-8px;color:#8f8f8f;">This is where you and your users will login to your account</span>
+<span style="<?php echo $fontSize;?>;display:block;margin-top:-8px;color:#8f8f8f;">This is where you and your users will login to your account</span>
 <p id="userdomain-error-wrapper" style="display:none;margin-top:-39px;" class="signup_Error"></p>
 <div class="form-field" style="display:none;">
   <i class="icon-phone"></i>

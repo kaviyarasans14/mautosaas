@@ -122,7 +122,7 @@ function validateEmail(emailid){
 	emailiderror.style.display = "none";
 	emailiderror.innerHTML = "";
 	emailidwidget.parentElement.className = "form-field";
-	var othersignup = 'Please Enter Your Business Email For Direct Signup or <a target="_blank" href="https://leadsengage.com/signup-free-trial/" style="color:blue;">Contact Sales For Trial</a>';
+	var othersignup = 'Please Enter Your Business Email or <a target="_blank" href="https://leadsengage.com/signup-free-trial/" style="color:blue;">Contact Sales For Free Trial</a>';
 	var invalidemailsids = ["gmail", "yahoo", "hotmail", "live", "outlook", "rediffmail", "mail", "yandex","sify"];
 	var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 	var reg = /^([\w-\.]+@(?!gmail.com)(?!yahoo.com)(?!hotmail.com)(?!yahoo.co.in)(?!aol.com)(?!abc.com)(?!xyz.com)(?!pqr.com)(?!rediffmail.com)(?!live.com)(?!outlook.com)(?!me.com)(?!msn.com)(?!ymail.com)([\w-]+\.)+[\w-]{2,4})?$/;
