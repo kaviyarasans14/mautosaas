@@ -333,7 +333,6 @@ function checkDomainCpanel($con,$domain){
 
 function checkDomainAvailability($con,$domain){
     $sql="select appid from applicationlist where f5='$domain';";
-    displaysignuplog("SQL:".$sql);
     $dbrow = getResultArray ( $con, $sql );
 	$domainexist = true;
     if(sizeof($dbrow) != 0){

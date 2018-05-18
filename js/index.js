@@ -78,8 +78,8 @@ function validateForm() {
 		cnamewidget.parentElement.className += " error";
 		isvalidform = false;
 	}*/
-				              
-	if (!validateEmail(emailid)) {   
+
+	if (!validateEmail(emailid)) {
 		isvalidform = false;                   
 	}
 	if (!validateDomain(domain)) {             
@@ -118,6 +118,7 @@ function validateForm() {
 
 function validateEmail(emailid){  
 	var emailidwidget = document.forms['signup']['useremail'];
+	var emailid = emailid.toLowerCase();
 	var emailiderror = document.getElementById("useremail-error-wrapper");
 	emailiderror.style.display = "none";
 	emailiderror.innerHTML = "";

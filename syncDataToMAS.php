@@ -63,7 +63,7 @@ try {
                 $sql = "select user_name,action,date_added from ".$appdbname.".audit_log where  user_name not like 'Sadmin LeadsEngage' order by date_added desc limit 1";
                 $result = getResultArray($con, $sql);
                 $dateandtime="";
-                $dateadded="";
+                $dateadded='';
                 if(sizeof($result) > 0 ){
                     $dateadded=$result[0][2];
                 }
@@ -71,18 +71,40 @@ try {
                 $sql="select planname from  ".$appdbname.".paymenthistory where paymentstatus='Paid' order by createdOn desc limit 1";
                 $result = getResultArray($con, $sql);
                 $plantype="";
-                $leadstage='Trail - Inititated';
+                $leadstage='Trial- Initiated';
                 if(sizeof($result) > 0 ){
                     $plantype=$result[0][0];
                     $leadstage= 'Paid- Active';
                 }
-                $sql = "select website,timezone from ".$appdbname.".accountinfo";
+                $sql = "select companyname,city,state,country from ".$appdbname.".billinginfo";
+                $accountdetails = getResultArray($con, $sql);
+                $companyname='';
+                $city='';
+                $state='';
+                $country='';
+                if(sizeof($accountdetails) > 0 ){
+                    $companyname=$accountdetails[0][0];
+                    $city=$accountdetails[0][1];
+                    $state=$accountdetails[0][2];
+                    $country=$accountdetails[0][3];
+                }
+                $sql = "select first_name,last_name from ".$appdbname.".users where email='$email'";
+                $userinfo = getResultArray($con, $sql);
+                $firstname='';
+                $lastname='';
+                if(sizeof($userinfo) > 0 ){
+                    $firstname = $userinfo[0][0];
+                    $lastname  = $userinfo[0][1];
+                }
+                $sql = "select website,timezone,phonenumber from ".$appdbname.".accountinfo";
                 $userresult = getResultArray($con, $sql);
                 $website='';
                 $timezone='';
+                $mobilenumber='';
                 if(sizeof($userresult) > 0 ){
-                    $website=$userresult[0][0];
-                    $timezone=$userresult[0][1];
+                    $website = $userresult[0][0];
+                    $timezone  = $userresult[0][1];
+                    $mobilenumber  = $userresult[0][2];
                 }
                 $last15dayscontactcreated = getLast15DaysContactsCreated($con,$appid);
                 $last15daysmailsent=getLast15DaysEmailSent($con,$appid);
@@ -90,10 +112,10 @@ try {
                 $licenseinfo = getResultArray($con, $sql);
                 $licensedbs = sizeof($licenseinfo);
                 $actualrecordcount = $licenseinfo[0][2];
-                $dateadded=     empty($dateadded) ? "NULL" :"'".$dateadded."'";
-
+                $dateadded   =  empty($dateadded) ? "NULL" :"'".$dateadded."'";
+                $currentdate =  date('Y-m-d H:i:s');
                 $leadtable = DBINFO::$SIGNUP_DBNAME.".leads";
-                $sql="update $leadtable set app_id='$appid',domain='$domain',plan_type='$plantype',contact_used='$actualrecordcount',last_15_days_contact_crea='$last15dayscontactcreated',last_15_days_email_send='$last15daysmailsent',last_activity_in_app=$dateadded,timezone1='$timezone',website1='$website',lead_stage='$leadstage' where email='$email' and domain='$domain'";
+                $sql="update $leadtable set app_id='$appid',domain='$domain',plan_type='$plantype',contact_used='$actualrecordcount',last_15_days_contact_crea='$last15dayscontactcreated',last_15_days_email_send='$last15daysmailsent',last_activity_in_app=$dateadded,timezone1='$timezone',website1='$website',lead_stage='$leadstage',mobile='$mobilenumber',company_new='$companyname',date_modified='$currentdate',city='$city',state='$state',country='$country',firstname='$firstname',lastname='$lastname' where email='$email' and domain='$domain'";
                 execSQL($con, $sql);
                 displaySynclog("Updated:SuccessFully".$sql);
             }
