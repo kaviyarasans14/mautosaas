@@ -17,7 +17,7 @@ class DBINFO {
 	public static $DEFAULT_CREATEDBY_ID = '17';
 	public static $DEFAULT_CREATEDBY_NAME = 'Kaviarasan S';
 	public static $DEFAULT_EDITIONINDEX = '2';
-	public static $DEFAULT_EMAILID = '63';
+	public static $DEFAULT_EMAILID = '61';
 	public static $SIGNUP_URL = "http://localhost/mauto/index.php";
 	public static $ACTIONVATION_LINK = "http://localhost/mautosaas/lib/activation.php";
 	public static $LEAD_STATUS = "Signup";

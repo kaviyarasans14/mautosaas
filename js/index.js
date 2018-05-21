@@ -1,3 +1,4 @@
+include('js/config.js');
 function clearerrormsg() {
     	var firstnameerror = document.getElementById("firstname-error-wrapper");
 	firstnameerror.innerHTML = "";
@@ -116,7 +117,7 @@ function validateForm() {
 	return isvalidform;
 }
 
-function validateEmail(emailid){  
+function validateEmail(emailid){
 	var emailidwidget = document.forms['signup']['useremail'];
 	var emailid = emailid.toLowerCase();
 	var emailiderror = document.getElementById("useremail-error-wrapper");
@@ -124,9 +125,7 @@ function validateEmail(emailid){
 	emailiderror.innerHTML = "";
 	emailidwidget.parentElement.className = "form-field";
 	var othersignup = 'Please Enter Your Business Email or <a target="_blank" href="https://leadsengage.com/signup-free-trial/" style="color:#FFFFFF;">Contact Sales For Free Trial</a>';
-	var invalidemailsids = ["gmail", "yahoo", "hotmail", "live", "outlook", "rediffmail", "mail", "yandex","sify"];
 	var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-	var reg = /^([\w-\.]+@(?!gmail.com)(?!yahoo.com)(?!hotmail.com)(?!yahoo.co.in)(?!aol.com)(?!abc.com)(?!xyz.com)(?!pqr.com)(?!rediffmail.com)(?!live.com)(?!outlook.com)(?!me.com)(?!msn.com)(?!ymail.com)([\w-]+\.)+[\w-]{2,4})?$/;
 	var isValidemail = true;
 	if (emailid == null || emailid == '') {
 		emailiderror.style.display = "block";

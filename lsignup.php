@@ -27,6 +27,7 @@ if(isMobile()){
 <script src="jquery-3.3.1.min.js"></script>
 <script src="js/inputfieldvalidator.js"></script>
 <script src="js/index.js"></script>
+<script src="js/config.js"></script>
 </head>
 <body>
 <div class="form-wrapper">

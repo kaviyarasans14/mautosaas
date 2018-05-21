@@ -59,7 +59,7 @@ try {
             $domain = $applist[$i][2];
             if($appid!= '' && $email!= '' && $domain!= ''){
                 $appdbname = DBINFO::$APPDBNAME . $appid;
-
+                $leadtable = DBINFO::$SIGNUP_DBNAME.".leads";
                 $sql = "select user_name,action,date_added from ".$appdbname.".audit_log where  user_name not like 'Sadmin LeadsEngage' order by date_added desc limit 1";
                 $result = getResultArray($con, $sql);
                 $dateandtime="";
@@ -67,11 +67,14 @@ try {
                 if(sizeof($result) > 0 ){
                     $dateadded=$result[0][2];
                 }
-
+                $sql="select lead_stage from  ".$leadtable." where email='$email' and domain='$domain'";
+                $result = getResultArray($con, $sql);
+                if(sizeof($result) > 0 ){
+                    $leadstage = $result[0][0];
+                }
                 $sql="select planname from  ".$appdbname.".paymenthistory where paymentstatus='Paid' order by createdOn desc limit 1";
                 $result = getResultArray($con, $sql);
                 $plantype="";
-                $leadstage='Trial- Initiated';
                 if(sizeof($result) > 0 ){
                     $plantype=$result[0][0];
                     $leadstage= 'Paid- Active';
@@ -114,7 +117,6 @@ try {
                 $actualrecordcount = $licenseinfo[0][2];
                 $dateadded   =  empty($dateadded) ? "NULL" :"'".$dateadded."'";
                 $currentdate =  date('Y-m-d H:i:s');
-                $leadtable = DBINFO::$SIGNUP_DBNAME.".leads";
                 $sql="update $leadtable set app_id='$appid',domain='$domain',plan_type='$plantype',contact_used='$actualrecordcount',last_15_days_contact_crea='$last15dayscontactcreated',last_15_days_email_send='$last15daysmailsent',last_activity_in_app=$dateadded,timezone1='$timezone',website1='$website',lead_stage='$leadstage',mobile='$mobilenumber',company_new='$companyname',date_modified='$currentdate',city='$city',state='$state',country='$country',firstname='$firstname',lastname='$lastname' where email='$email' and domain='$domain'";
                 execSQL($con, $sql);
                 displaySynclog("Updated:SuccessFully".$sql);
