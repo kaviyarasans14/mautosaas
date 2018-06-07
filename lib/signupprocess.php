@@ -192,14 +192,16 @@ function sendSignupVerifyMail($firstname,$lastname,$email,$idhash,$con,$password
 
 							<p style='text-align:left;font-size:14px;font-family: Montserrat,sans-serif;'>Hi $firstname $lastname</p>
 
-							<p style='text-align:left;font-size:14px;line-height: 30px;font-family: Montserrat,sans-serif;'>Thanks for signing up! We're thrilled to have you on-board.
-								<br>Please click following link to verify your email and Login in to your account.</p><a href=\"$redirecturl\" class='butle' style='$butlestyle'>Login to Your Account</a>
+							<p style='text-align:left;font-size:14px;line-height: 30px;font-family: Montserrat,sans-serif;'>Thanks for signing up! We're thrilled to have you on-board. </p>
+                            <p style='text-align:left;font-size:14px;line-height: 30px;font-family: Montserrat,sans-serif;'>Here are your login details</p>
+                            <p style='text-align:left;font-size:14px;line-height: 15px;font-family: Montserrat,sans-serif;'><b>Login ID : $email</b></p>
+                            <p style='text-align:left;font-size:14px;line-height: 15px;font-family: Montserrat,sans-serif;'><b>Password : $password</b></p>
+							<p style='text-align:left;font-size:14px;line-height: 10px;font-family: Montserrat,sans-serif;'>	<br>Please click following link to verify your email and Login in to your account.</p>
+                                
+                                <a href=\"$redirecturl\" class='butle' style='$butlestyle'>Login to Your Account</a>
 							<br>
 
 							<p style='text-align:left;font-size:14px;line-height: 30px;font-family: Montserrat,sans-serif;'>We're always around to help you set up and make the best use of the product. If you have any questions, just reply to this email, and we'll be on it.</p>
-<p style='text-align:left;font-size:14px;line-height: 30px;font-family: Montserrat,sans-serif;'>Here are your login details</p>
-<p style='text-align:left;font-size:14px;line-height: 15px;font-family: Montserrat,sans-serif;'><b>Login ID : $email</b></p>
-<p style='text-align:left;font-size:14px;line-height: 15px;font-family: Montserrat,sans-serif;'><b>Password : $password</b></p>
 							<br>
 
 							<p style='text-align:left;font-size:14px;font-family: Montserrat,sans-serif;'>Cheers!
