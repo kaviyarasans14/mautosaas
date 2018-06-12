@@ -196,7 +196,7 @@ function sendSignupVerifyMail($firstname,$lastname,$email,$idhash,$con,$password
                             <p style='text-align:left;font-size:14px;line-height: 30px;font-family: Montserrat,sans-serif;'>Here are your login details</p>
                             <p style='text-align:left;font-size:14px;line-height: 15px;font-family: Montserrat,sans-serif;'><b>Login ID : $email</b></p>
                             <p style='text-align:left;font-size:14px;line-height: 15px;font-family: Montserrat,sans-serif;'><b>Password : $password</b></p>
-							<p style='text-align:left;font-size:14px;line-height: 10px;font-family: Montserrat,sans-serif;'>	<br>Please click following link to verify your email and Login in to your account.</p>
+							<p style='text-align:left;font-size:14px;line-height: 30px;margin-top: -20px;font-family: Montserrat,sans-serif;'>	<br>Please click following link to verify your email and Login in to your account.</p>
                                 
                                 <a href=\"$redirecturl\" class='butle' style='$butlestyle'>Login to Your Account</a>
 							<br>
